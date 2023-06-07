@@ -2,7 +2,7 @@ package ru.whbex.guilib;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import ru.whbex.guilib.gui.GUIManager;
-import ru.whbex.guilib.tests.GuiListCommand;
+import ru.whbex.guilib.tests.GuiInfoCommand;
 import ru.whbex.guilib.tests.TestCommand;
 
 import java.util.logging.Logger;
@@ -20,7 +20,7 @@ public final class GUILib extends JavaPlugin {
         gm = new GUIManager(this, null, true);
         gm.bindClick(-999, ((player, context) -> context.guiManager().close(player)));
         this.getCommand("guitesting").setExecutor(new TestCommand());
-        this.getCommand("guiinfo").setExecutor(new GuiListCommand());
+        this.getCommand("guiinfo").setExecutor(new GuiInfoCommand());
 
     }
 

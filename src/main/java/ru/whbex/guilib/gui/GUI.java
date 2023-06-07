@@ -76,7 +76,7 @@ public class GUI {
         public Builder size(int s){
             if(s < 1)
                 throw new IllegalArgumentException("GUI Size must be a positive number!");
-            if(s > 5)
+            if(s > 6)
                 throw new IllegalArgumentException("Line count is too big!");
             GUI.this.size = s;
             return this;

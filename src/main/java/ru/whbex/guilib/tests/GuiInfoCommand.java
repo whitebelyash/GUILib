@@ -9,7 +9,7 @@ import ru.whbex.guilib.GUILib;
 import ru.whbex.guilib.gui.GUI;
 import ru.whbex.guilib.gui.GUIInstance;
 
-public class GuiListCommand implements CommandExecutor {
+public class GuiInfoCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if(strings.length < 1){
@@ -29,7 +29,7 @@ public class GuiListCommand implements CommandExecutor {
         }
         GUI gui = inv.getGui();
         String guiName = gui.getName();
-        String msg = "--- " + "n" + "s GUI ---" + '\n' +
+        String msg = "--- " + n + "'s GUI ---" + '\n' +
                 "- Name: " + guiName + '\n' +
                 "- Size: " + gui.getSize() + '\n' +
                 "- Buttons count: " + gui.getButtons().values().size() + '\n';
