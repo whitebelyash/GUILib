@@ -2,8 +2,4 @@ name: GUILib
 version: '${project.version}'
 main: ru.whbex.guilib.GUILib
 api-version: 1.19
-commands:
-  guitesting:
-    usage: /guitesting simple|pattern
-  guiinfo:
-    usage: /guiinfo <player>
+description: Inventory GUIs Library
