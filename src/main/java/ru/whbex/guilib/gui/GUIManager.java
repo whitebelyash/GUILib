@@ -17,7 +17,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import ru.whbex.guilib.GUILib;
 
-import javax.swing.plaf.IconUIResource;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,10 +42,12 @@ public class GUIManager {
         }
     }
     private final boolean debug;
+    private final Plugin plugin;
     private final Map<Player, GUIInstance> guiHolders = new HashMap<>();
     private final Map<Integer, ClickHandler> sharedHandlers = new HashMap<>();
     public final Sound defaultSound;
     public GUIManager(Plugin plugin, Sound defaultSound, boolean debug){
+        this.plugin = plugin;
         this.debug = debug;
         this.defaultSound = defaultSound;
         Bukkit.getPluginManager().registerEvents(new GUIListener(), plugin);
@@ -143,7 +144,7 @@ public class GUIManager {
     // TODO: Remove
     public final void logd(String msg){
         if(debug)
-            GUILib.LOGGER.info("DBG: " + msg);
+            GUILib.LOGGER.info("DBG(" + this.plugin.getName() + "): " + msg);
 
     }
 
