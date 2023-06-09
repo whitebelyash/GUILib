@@ -17,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import ru.whbex.guilib.GUILib;
 
+import javax.swing.plaf.IconUIResource;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -69,14 +70,20 @@ public class GUIManager {
     }
 
     public void open(Player player, GUI gui){
-        if (gui.getSize() < 1 || gui.getSize() > 5)
-            throw new IllegalArgumentException("Invalid GUI Size: " + gui.getSize());
+        if (gui.getSize() < 1 || gui.getSize() > 5){
+            GUILib.LOGGER.info("Invalid gui size " + gui.getSize());
+            return;
+        }
         Inventory bukkitInv = Bukkit.createInventory(player, gui.getInvSize(), gui.getName());
         GUIInstance inv = new GUIInstance(player.openInventory(bukkitInv), gui);
         for(Map.Entry<Integer, Button> e : gui.getButtons().entrySet()){
             ItemStack is = e.getValue().getIcon().isEmpty() ?
                     e.getValue().getIcon().getIcon(null) :
-                    e.getValue().getIcon().getIcon(new GUIContext(this, gui, inv, e.getKey()));
+                    e.getValue().getIcon().getIcon(new GUIContext(this, gui, inv, e.getKey(), null, player, GUIContext.ContextType.OPEN));
+            if(is == null){
+                GUILib.LOGGER.info("Null item stack detected at " + e.getKey());
+                continue;
+            }
             bukkitInv.setItem(e.getKey(), is);
         }
         guiHolders.put(player, inv);
@@ -95,7 +102,7 @@ public class GUIManager {
             return false;
         GUIInstance gi = getGUIInstance(player);
         GUI gui = getGUIInstance(player).getGui();
-        GUIContext ctx = new GUIContext(this, gui, gi, pos);
+        GUIContext ctx = new GUIContext(this, gui, gi, pos, clickType, player, GUIContext.ContextType.CLICK);
         if(sharedHandlers.containsKey(pos)){
             sharedHandlers.get(pos).handle(player, ctx);
             return true;

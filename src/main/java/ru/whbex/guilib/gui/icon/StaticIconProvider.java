@@ -7,16 +7,15 @@ import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import ru.whbex.guilib.gui.GUIContext;
+import ru.whbex.guilib.util.ItemUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-
+// TODO: Implement enchantments
 public class StaticIconProvider implements IconProvider {
-    private String name = "Default icon name";
-    private int count = 1;
-    private List<String> lore = new ArrayList<>();
-    private Material material = Material.STONE;
+
     private StaticIconProvider(){}
+    private ItemStack item;
 
 
     private Builder getBuilder(){
@@ -28,12 +27,7 @@ public class StaticIconProvider implements IconProvider {
 
     @Override
     public ItemStack getIcon(GUIContext ctx) {
-        ItemStack is = new ItemStack(material, count);
-        ItemMeta im = Bukkit.getItemFactory().getItemMeta(material);
-        im.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&f" + name));
-        im.setLore(lore);
-        is.setItemMeta(im);
-        return is;
+        return item;
     }
 
     @Override
@@ -42,35 +36,40 @@ public class StaticIconProvider implements IconProvider {
     }
 
     public class Builder {
+        private String name = "Default icon name";
+        private int count = 1;
+        private List<String> lore = new ArrayList<>();
+        private Material material = Material.STONE;
         private final StaticIconProvider inst = StaticIconProvider.this;
         private Builder(){}
 
         public Builder name(String n){
-            inst.name = n;
+            this.name = n;
             return this;
         }
         public Builder lore(List<String> lore, boolean append){
             if(append){
-                inst.lore.addAll(lore);
+                this.lore.addAll(lore);
             }
             else {
-                inst.lore = lore;
+                this.lore = lore;
             }
             return this;
         }
         public Builder appendLore(String l){
-            inst.lore.add(l);
+            this.lore.add(l);
             return this;
         }
         public Builder count(int c){
-            inst.count = c;
+            this.count = c;
             return this;
         }
         public Builder material(Material mat){
-            inst.material = mat;
+            this.material = mat;
             return this;
         }
         public StaticIconProvider build(){
+            inst.item = ItemUtils.createItem(name, lore, null, count, material);
             return inst;
         }
     }

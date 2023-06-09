@@ -1,17 +1,30 @@
 package ru.whbex.guilib.gui;
 
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+
 public class GUIContext {
+    public enum ContextType {
+        OPEN,
+        CLICK
+    }
     private final GUIManager guiManager;
     private final GUI gui;
     private final GUIInstance gi;
     private boolean result = true;
     private final int slot;
+    private final ClickType clickType;
+    private final Player player;
+    private final ContextType ctxType;
 
-    public GUIContext(GUIManager guiManager, GUI gui, GUIInstance gi, int slot) {
+    public GUIContext(GUIManager guiManager, GUI gui, GUIInstance gi, int slot, ClickType clickType, Player player, ContextType ctxType) {
         this.guiManager = guiManager;
         this.gui = gui;
         this.gi = gi;
         this.slot = slot;
+        this.clickType = clickType;
+        this.player = player;
+        this.ctxType = ctxType;
     }
 
     public GUIManager guiManager() {
@@ -32,5 +45,15 @@ public class GUIContext {
     }
     public int pos(){
         return slot;
+    }
+    public ClickType clickType(){
+        return clickType;
+    }
+    public Player player(){
+        return player;
+    }
+
+    public ContextType type() {
+        return ctxType;
     }
 }

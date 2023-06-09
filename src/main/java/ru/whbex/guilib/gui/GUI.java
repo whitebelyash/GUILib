@@ -48,7 +48,7 @@ public class GUI {
             GUI.this.name = name;
             return this;
         }
-        public Builder map(int pos, Button button){
+        public Builder map(int pos, Button button) throws IllegalArgumentException{
             if(pos < 0)
                 throw new IllegalArgumentException("Button position must be a positive number!");
             if (pos > size*INV_LINE_SIZE)
@@ -56,14 +56,14 @@ public class GUI {
             buttons.put(pos, button);
             return this;
         }
-        public Builder map(char patternChar, Button button){
+        public Builder map(char patternChar, Button button) throws IllegalArgumentException {
             if(!charPos.containsKey(patternChar))
                 throw new IllegalArgumentException("Unknown pattern character " + patternChar);
             Set<Integer> positions = charPos.getOrDefault(patternChar, new HashSet<>());
             positions.forEach(pos -> buttons.put(pos, button));
             return this;
         }
-        public Builder charToPos(int pos, char c){
+        public Builder charToPos(int pos, char c) throws IllegalArgumentException {
             if(pos < 0)
                 throw new IllegalArgumentException("Char position must be a positive number!");
             if(pos > size*INV_LINE_SIZE)
@@ -73,7 +73,7 @@ public class GUI {
             GUI.this.charPos.put(c, positions);
             return this;
         }
-        public Builder size(int s){
+        public Builder size(int s) throws IllegalArgumentException {
             if(s < 1)
                 throw new IllegalArgumentException("GUI Size must be a positive number!");
             if(s > 6)

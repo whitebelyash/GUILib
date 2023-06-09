@@ -10,17 +10,16 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import ru.whbex.guilib.GUILib;
-import ru.whbex.guilib.gui.Button;
-import ru.whbex.guilib.gui.GUI;
-import ru.whbex.guilib.gui.GUIManager;
-import ru.whbex.guilib.gui.Pattern;
+import ru.whbex.guilib.gui.*;
 import ru.whbex.guilib.gui.icon.DynamicIconProvider;
 import ru.whbex.guilib.gui.icon.IconProvider;
 import ru.whbex.guilib.gui.icon.StaticIconProvider;
+import ru.whbex.guilib.util.ItemUtils;
 import ru.whbex.guilib.util.PatternParser;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class TestCommand implements CommandExecutor {
@@ -133,16 +132,11 @@ public class TestCommand implements CommandExecutor {
         final String[] pattern = {"####d####"};
         final String name = "Dynamic icon";
         final List<String> lore = Arrays.asList("shit", "this icon is dynamic");
-        Supplier<ItemStack> suppl = () -> {
-            p.sendMessage("Hello from supplier");
-            ItemStack is = new ItemStack(Material.STONE);
-            ItemMeta i = is.getItemMeta();
-            i.setDisplayName(name);
-            i.setLore(lore);
-            is.setItemMeta(i);
-            return is;
+        Function<GUIContext, ItemStack> func = ctx -> {
+            ctx.player().sendMessage("Hello from DynamicIconProvider");
+            return ItemUtils.createItem("Haha lol", Material.STONE);
         };
-        IconProvider icon = new DynamicIconProvider(suppl);
+        IconProvider icon = new DynamicIconProvider(func);
         Button b = Button.builder()
                 .icon(icon)
                 .addClickHandler(ClickType.LEFT, ((player, context) -> player.sendMessage("Click!")))
