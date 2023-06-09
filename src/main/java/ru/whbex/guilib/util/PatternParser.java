@@ -10,6 +10,7 @@ import java.util.Arrays;
 
 public class PatternParser {
     public static final char EMPTY = '#';
+    private static final Button EMPTY_BUTTON = Button.builder().icon(new EmptyIconProvider()).build();
 
     public static GUI.Builder parse(String[] pattern, GUI.Builder gui){
         if(pattern == null)
@@ -23,10 +24,7 @@ public class PatternParser {
             for(char c : line.toCharArray()){
                 gui.charToPos(pos, c);
                 if(c == EMPTY){
-                    Button empty = Button.builder().name("empty")
-                            .icon(new EmptyIconProvider())
-                            .build();
-                    gui.map(c, empty);
+                    gui.map(c, EMPTY_BUTTON);
                 }
                 pos++;
             }

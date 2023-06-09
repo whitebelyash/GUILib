@@ -1,5 +1,6 @@
 package ru.whbex.guilib.tests;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
@@ -19,6 +20,7 @@ import ru.whbex.guilib.util.PatternParser;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -72,7 +74,6 @@ public class TestCommand implements CommandExecutor {
                 .material(Material.BEDROCK)
                 .build();
         Button b = Button.builder()
-                .name("Hello world button")
                 .icon(icon)
                 .addClickHandler(ClickType.LEFT, ((player, context) -> {
                     context.guiManager().logd("Executing click callback");
@@ -81,12 +82,11 @@ public class TestCommand implements CommandExecutor {
                 .addSoundSuccess(ClickType.LEFT, Sound.BLOCK_AMETHYST_BLOCK_BREAK)
                 .build();
         Button b1 = Button.builder()
-                .name("Click me")
                 .icon(icon1)
                 .addSoundSuccess(ClickType.LEFT, Sound.ENTITY_ENDER_DRAGON_DEATH)
                 .addClickHandler(ClickType.LEFT, (((player, context) -> {
                     player.sendMessage("Kek");
-                    context.guiManager().getGUIInstance(player).updateButton(context.pos(), b, context);
+                    context.guiManager().getGUIInstance(player).setButton(context.pos(), b, context);
                 })))
                 .build();
         GUI gui = GUI.builder()
@@ -110,14 +110,12 @@ public class TestCommand implements CommandExecutor {
                 .material(Material.DIAMOND)
                 .build();
         Button f = Button.builder()
-                .name("kish")
                 .icon(ficon)
                 .addClickHandler(ClickType.LEFT, ((player, context) -> player.sendMessage("Cringe")))
                 .addClickHandler(ClickType.RIGHT, (((player, context) -> player.sendMessage("Right click bro"))))
                 .addSoundSuccess(ClickType.LEFT, Sound.BLOCK_STONE_BREAK)
                 .build();
         Button g = Button.builder()
-                .name("g")
                 .icon(gicon)
                 .addClickHandler(ClickType.LEFT, (((player, context) -> player.kickPlayer("Вы были заблокированы навсегда"))))
                 .build();
@@ -129,21 +127,23 @@ public class TestCommand implements CommandExecutor {
         gm.open(p, b.build());
     }
     private void showDynamic(GUIManager gm, Player p){
+        TestObject to = new TestObject("Before update");
         final String[] pattern = {"####d####"};
-        final String name = "Dynamic icon";
-        final List<String> lore = Arrays.asList("shit", "this icon is dynamic");
         Function<GUIContext, ItemStack> func = ctx -> {
             ctx.player().sendMessage("Hello from DynamicIconProvider");
-            return ItemUtils.createItem("Haha lol", Material.STONE);
+            return ItemUtils.createItem(to.getTest(), Material.STONE);
         };
         IconProvider icon = new DynamicIconProvider(func);
         Button b = Button.builder()
                 .icon(icon)
-                .addClickHandler(ClickType.LEFT, ((player, context) -> player.sendMessage("Click!")))
+                .addClickHandler(ClickType.LEFT, ((player, context) -> {
+                    Bukkit.getScheduler().runTaskLater(GUILib.getInstance(), () -> context.guiInstance().updateButton(context.pos(), context), 20L);
+                }))
                 .build();
         GUI.Builder gb = GUI.builder();
         PatternParser.parse(pattern, gb);
         gb.map('d', b);
         gm.open(p, gb.build());
+        Bukkit.getScheduler().runTaskLater(GUILib.getInstance(), () -> to.setTest("After update"), 5L);
     }
 }

@@ -10,19 +10,18 @@ import java.util.Map;
 
 public class Button {
 
-    private String name = "Button";
     private IconProvider icon;
     private final Map<ClickType, ClickHandler> clickHandlers = new HashMap<>();
     private final Map<ClickType, Sound> soundSuccessMap = new HashMap<>();
     private final Map<ClickType, Sound> soundFailMap = new HashMap<>();
     private Button(){}
 
-    public String getName() {
-        return name;
-    }
 
-    public IconProvider getIcon() {
+    public IconProvider getIconProvider() {
         return icon;
+    }
+    void setIconProvider(IconProvider ip){
+        this.icon = ip;
     }
 
     public ClickHandler getClickHandler(ClickType type) {
@@ -45,11 +44,6 @@ public class Button {
         private final Button inst = Button.this;
 
         private Builder(){}
-
-        public Builder name(String n){
-            inst.name = n;
-            return this;
-        }
         public Builder icon(IconProvider ip){
             inst.icon = ip;
             return this;

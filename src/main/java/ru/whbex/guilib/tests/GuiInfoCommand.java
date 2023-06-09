@@ -31,8 +31,7 @@ public class GuiInfoCommand implements CommandExecutor {
         String guiName = gui.getName();
         String msg = "--- " + n + "'s GUI ---" + '\n' +
                 "- Name: " + guiName + '\n' +
-                "- Size: " + gui.getSize() + '\n' +
-                "- Buttons count: " + gui.getButtons().values().size() + '\n';
+                "- Size: " + gui.getSize() + '\n';
         commandSender.sendMessage(msg);
         return true;
     }

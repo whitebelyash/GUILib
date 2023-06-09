@@ -5,10 +5,11 @@ import org.bukkit.inventory.InventoryView;
 import ru.whbex.guilib.gui.icon.IconProvider;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 public class GUI {
     private static final int INV_LINE_SIZE = 9;
-    private String name = "Default GUI";
+    private Supplier<String> name = () -> "Default GUI";
     private Map<Integer, Button> buttons = new HashMap<>();
     private Map<Character, Set<Integer>> charPos = new HashMap<>();
     // in columns
@@ -16,6 +17,9 @@ public class GUI {
     private GUI(){}
 
     public String getName() {
+        return name.get();
+    }
+    public Supplier<String> getNameSupplier(){
         return name;
     }
 
@@ -26,11 +30,16 @@ public class GUI {
         return size*INV_LINE_SIZE;
     }
 
-    public Map<Integer, Button> getButtons() {
+    Map<Integer, Button> getButtons() {
         return buttons;
     }
     public Button getButton(int pos) {
         return buttons.get(pos);
+    }
+    void setButton(int pos, Button button){
+        if(pos < 0 || pos > getInvSize())
+            throw new IllegalArgumentException("Size is invalid!");
+        buttons.put(pos, button);
     }
 
 
@@ -45,6 +54,10 @@ public class GUI {
     public class Builder {
 
         public Builder name(String name){
+            GUI.this.name = () -> name;
+            return this;
+        }
+        public Builder name(Supplier<String> name){
             GUI.this.name = name;
             return this;
         }

@@ -75,13 +75,13 @@ public class GUIManager {
             return;
         }
         Inventory bukkitInv = Bukkit.createInventory(player, gui.getInvSize(), gui.getName());
-        GUIInstance inv = new GUIInstance(player.openInventory(bukkitInv), gui);
+        GUIInstance inv = new GUIInstance(this, player.openInventory(bukkitInv), gui, player);
         for(Map.Entry<Integer, Button> e : gui.getButtons().entrySet()){
-            ItemStack is = e.getValue().getIcon().isEmpty() ?
-                    e.getValue().getIcon().getIcon(null) :
-                    e.getValue().getIcon().getIcon(new GUIContext(this, gui, inv, e.getKey(), null, player, GUIContext.ContextType.OPEN));
+            ItemStack is = e.getValue().getIconProvider().isEmpty() ?
+                    e.getValue().getIconProvider().getIcon(null) :
+                    e.getValue().getIconProvider().getIcon(new GUIContext(this, gui, inv, e.getKey(), null, player, GUIContext.ContextType.OPEN));
             if(is == null){
-                GUILib.LOGGER.info("Null item stack detected at " + e.getKey());
+                GUILib.LOGGER.warning("Null item stack detected at " + e.getKey());
                 continue;
             }
             bukkitInv.setItem(e.getKey(), is);
