@@ -1,11 +1,7 @@
 package ru.whbex.guilib.gui.icon;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import ru.whbex.guilib.gui.GUIContext;
 import ru.whbex.guilib.util.ItemUtils;
 

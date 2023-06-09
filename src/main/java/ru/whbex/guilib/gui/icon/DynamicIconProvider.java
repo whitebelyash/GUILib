@@ -4,7 +4,6 @@ import org.bukkit.inventory.ItemStack;
 import ru.whbex.guilib.gui.GUIContext;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class DynamicIconProvider implements IconProvider {
     public DynamicIconProvider(Function<GUIContext, ItemStack> supplier){

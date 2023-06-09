@@ -1,9 +1,4 @@
 package ru.whbex.guilib.gui;
-
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.InventoryView;
-import ru.whbex.guilib.gui.icon.IconProvider;
-
 import java.util.*;
 import java.util.function.Supplier;
 

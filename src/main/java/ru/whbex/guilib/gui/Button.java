@@ -4,7 +4,6 @@ import org.bukkit.Sound;
 import org.bukkit.event.inventory.ClickType;
 import ru.whbex.guilib.gui.icon.IconProvider;
 
-import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
 
