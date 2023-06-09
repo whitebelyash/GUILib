@@ -135,7 +135,9 @@ public class GUIManager {
     }
     // TODO: Remove
     public final void logd(String msg){
-        GUILib.LOGGER.info("DBG: " + msg);
+        if(debug)
+            GUILib.LOGGER.info("DBG: " + msg);
+
     }
 
 

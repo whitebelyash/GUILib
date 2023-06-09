@@ -7,14 +7,21 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import ru.whbex.guilib.GUILib;
 import ru.whbex.guilib.gui.Button;
 import ru.whbex.guilib.gui.GUI;
 import ru.whbex.guilib.gui.GUIManager;
 import ru.whbex.guilib.gui.Pattern;
+import ru.whbex.guilib.gui.icon.DynamicIconProvider;
 import ru.whbex.guilib.gui.icon.IconProvider;
 import ru.whbex.guilib.gui.icon.StaticIconProvider;
 import ru.whbex.guilib.util.PatternParser;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Supplier;
 
 public class TestCommand implements CommandExecutor {
     @Override
@@ -27,7 +34,7 @@ public class TestCommand implements CommandExecutor {
         Player p = (Player) commandSender;
         GUIManager gm = GUILib.getInstance().getGUIManager();
         if(strings.length < 1){
-            commandSender.sendMessage("/guitesting simple|pattern");
+            commandSender.sendMessage("/guitesting simple|pattern|dynamic");
             return true;
         }
         String type = strings[0];
@@ -38,6 +45,9 @@ public class TestCommand implements CommandExecutor {
                     break;
                 case "pattern":
                     showPattern(gm, p);
+                    break;
+                case "dynamic":
+                    showDynamic(gm, p);
                     break;
                 default:
                     commandSender.sendMessage("Unknown gui " + type);
@@ -118,5 +128,28 @@ public class TestCommand implements CommandExecutor {
         PatternParser.parse(pattern, b);
         b.map('f', f).map('g', g);
         gm.open(p, b.build());
+    }
+    private void showDynamic(GUIManager gm, Player p){
+        final String[] pattern = {"####d####"};
+        final String name = "Dynamic icon";
+        final List<String> lore = Arrays.asList("shit", "this icon is dynamic");
+        Supplier<ItemStack> suppl = () -> {
+            p.sendMessage("Hello from supplier");
+            ItemStack is = new ItemStack(Material.STONE);
+            ItemMeta i = is.getItemMeta();
+            i.setDisplayName(name);
+            i.setLore(lore);
+            is.setItemMeta(i);
+            return is;
+        };
+        IconProvider icon = new DynamicIconProvider(suppl);
+        Button b = Button.builder()
+                .icon(icon)
+                .addClickHandler(ClickType.LEFT, ((player, context) -> player.sendMessage("Click!")))
+                .build();
+        GUI.Builder gb = GUI.builder();
+        PatternParser.parse(pattern, gb);
+        gb.map('d', b);
+        gm.open(p, gb.build());
     }
 }
