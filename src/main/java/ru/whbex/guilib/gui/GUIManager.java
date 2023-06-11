@@ -76,7 +76,7 @@ public class GUIManager {
             return;
         }
         Inventory bukkitInv = Bukkit.createInventory(player, gui.getInvSize(), gui.getName());
-        GUIInstance inv = new GUIInstance(this, player.openInventory(bukkitInv), gui, player);
+        GUIInstance inv = new GUIInstance(this, player.openInventory(bukkitInv), bukkitInv, gui, player);
         for(Map.Entry<Integer, Button> e : gui.getButtons().entrySet()){
             ItemStack is = e.getValue().getIconProvider().isEmpty() ?
                     e.getValue().getIconProvider().getIcon(null) :
@@ -108,7 +108,7 @@ public class GUIManager {
             sharedHandlers.get(pos).handle(player, ctx);
             return true;
         }
-        if(inv != null && inv.getType() != InventoryType.CHEST)
+        if(inv != null && inv != gi.getInventory())
             return true;
         if(pos > gui.getInvSize()) {
             logd("Invalid click position!");
