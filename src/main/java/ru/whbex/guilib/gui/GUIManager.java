@@ -15,6 +15,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+import ru.whbex.guilib.GLConfig;
 import ru.whbex.guilib.GUILib;
 
 import java.util.HashMap;
@@ -71,12 +72,24 @@ public class GUIManager {
     }
 
     public void open(Player player, GUI gui){
+        logd("Open GUI " + gui.getName() + " (p: " + player.getName() + ")");
         if (gui.getSize() < 1 || gui.getSize() > 5){
             GUILib.LOGGER.info("Invalid gui size " + gui.getSize());
             return;
         }
-        Inventory bukkitInv = Bukkit.createInventory(player, gui.getInvSize(), gui.getName());
-        GUIInstance inv = new GUIInstance(this, player.openInventory(bukkitInv), bukkitInv, gui, player);
+        boolean use_gi = GUILib.getInstance().config().REUSE_GI && isHoldingGUI(player) && getGUIInstance(player).getGui().getSize() == gui.getSize();
+        Inventory bukkitInv = use_gi ?
+                getGUIInstance(player).getInventory() :
+                Bukkit.createInventory(player, gui.getInvSize(), gui.getName());
+        GUIInstance inv = use_gi ?
+                getGUIInstance(player) :
+                new GUIInstance(this, player.openInventory(bukkitInv), bukkitInv, gui, player);
+        if(use_gi){
+            logd("Reusing old GUIInstance");
+            bukkitInv.clear();
+            inv.setGUI(gui);
+            inv.getView().setTitle(gui.getName());
+        }
         for(Map.Entry<Integer, Button> e : gui.getButtons().entrySet()){
             ItemStack is = e.getValue().getIconProvider().isEmpty() ?
                     e.getValue().getIconProvider().getIcon(null) :

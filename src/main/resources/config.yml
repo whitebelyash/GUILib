@@ -1,0 +1,5 @@
+# GUILib configuration
+
+# Use old GUIInstance (Inventory) instead of creating new. Speedups multigui navigation on Minecraft Bedrock
+# Works only if inventory size is unchanged (Title changing isn't supported on Bugrock)
+reuse-gi: true
