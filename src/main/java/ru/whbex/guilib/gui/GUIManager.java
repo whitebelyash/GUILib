@@ -91,7 +91,7 @@ public class GUIManager {
             inv.getView().setTitle(gui.getName());
         }
         for(Map.Entry<Integer, Button> e : gui.getButtons().entrySet()){
-            ItemStack is = e.getValue().getIconProvider().isEmpty() ?
+            ItemStack is = !e.getValue().getIconProvider().requireContext() ?
                     e.getValue().getIconProvider().getIcon(null) :
                     e.getValue().getIconProvider().getIcon(new GUIContext(this, gui, inv, e.getKey(), null, player, GUIContext.ContextType.OPEN));
             if(is == null){

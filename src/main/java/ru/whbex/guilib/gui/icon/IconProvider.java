@@ -6,6 +6,6 @@ import ru.whbex.guilib.gui.GUIContext;
 
 public interface IconProvider {
     ItemStack getIcon(GUIContext ctx);
-    boolean isEmpty();
+    boolean requireContext();
 
 }

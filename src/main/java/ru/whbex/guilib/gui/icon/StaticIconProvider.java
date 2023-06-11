@@ -27,7 +27,7 @@ public class StaticIconProvider implements IconProvider {
     }
 
     @Override
-    public boolean isEmpty() {
+    public boolean requireContext(){
         return false;
     }
 

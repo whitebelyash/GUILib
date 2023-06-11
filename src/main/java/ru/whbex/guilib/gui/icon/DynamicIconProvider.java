@@ -16,7 +16,7 @@ public class DynamicIconProvider implements IconProvider {
     }
 
     @Override
-    public boolean isEmpty() {
-        return false;
+    public boolean requireContext(){
+        return true;
     }
 }

@@ -13,7 +13,7 @@ public class EmptyIconProvider implements IconProvider {
     }
 
     @Override
-    public boolean isEmpty() {
-        return true;
+    public boolean requireContext(){
+        return false;
     }
 }
