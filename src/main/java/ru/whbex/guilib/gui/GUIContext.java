@@ -1,5 +1,6 @@
 package ru.whbex.guilib.gui;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
@@ -55,5 +56,27 @@ public class GUIContext {
 
     public ContextType type() {
         return ctxType;
+    }
+
+    public void replaceLater(Button button, long time){
+        if(type() == ContextType.OPEN)
+            return;
+        Bukkit.getScheduler().runTaskLater(guiManager.getPlugin(),
+                () -> {
+                    if(!guiManager().isHoldingSameGUI(player, gi))
+                        return;
+                    gi.setButton(slot, button, this);
+                }, time);
+    }
+    /**
+     * Temporarily replaces clicked button
+     * @param button replace button
+     * @param time how long it will be on screen in ticks
+     */
+    public void replaceTemp(Button button, long time){
+        Button old = gui.getButton(slot);
+        gi.setButton(slot, button, this);
+        replaceLater(old, time);
+
     }
 }

@@ -1,13 +1,13 @@
 package ru.whbex.guilib.gui.icon;
 
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import ru.whbex.guilib.gui.GUIContext;
 import ru.whbex.guilib.util.ItemUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-// TODO: Implement enchantments
+import java.util.*;
+
 public class StaticIconProvider implements IconProvider {
 
     private StaticIconProvider(){}
@@ -36,6 +36,8 @@ public class StaticIconProvider implements IconProvider {
         private int count = 1;
         private List<String> lore = new ArrayList<>();
         private Material material = Material.STONE;
+        private boolean ench = false;
+        private boolean hideTags = false;
         private final StaticIconProvider inst = StaticIconProvider.this;
         private Builder(){}
 
@@ -52,6 +54,13 @@ public class StaticIconProvider implements IconProvider {
             }
             return this;
         }
+        public Builder lore(boolean append, String... lore){
+            if(append)
+                this.lore.addAll(Arrays.asList(lore));
+            else
+                this.lore = new ArrayList<>(Arrays.asList(lore));
+            return this;
+        }
         public Builder appendLore(String l){
             this.lore.add(l);
             return this;
@@ -64,8 +73,17 @@ public class StaticIconProvider implements IconProvider {
             this.material = mat;
             return this;
         }
+        public Builder hideTags(){
+            hideTags = !hideTags;
+            return this;
+        }
+        public Builder enchant(){
+            ench = !ench;
+            return this;
+        }
         public StaticIconProvider build(){
-            inst.item = ItemUtils.createItem(name, lore, null, count, material);
+            Map<Enchantment, Integer> ench = this.ench ? Collections.singletonMap(Enchantment.MENDING, 1) : null;
+            inst.item = ItemUtils.createItem(name, lore, ench, count, material, hideTags);
             return inst;
         }
     }
