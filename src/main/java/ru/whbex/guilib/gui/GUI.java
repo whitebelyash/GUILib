@@ -1,12 +1,13 @@
 package ru.whbex.guilib.gui;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class GUI {
     private static final int INV_LINE_SIZE = 9;
     private Function<GUIContext, String> name = ctx -> "Default GUI";
-    private Map<Integer, Button> buttons = new HashMap<>();
+    private Map<Integer, Button> buttons = new ConcurrentHashMap<>();
     private Map<Character, List<Integer>> charPos = new HashMap<>();
     // in columns
     private int size = 1;

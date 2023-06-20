@@ -22,22 +22,22 @@ public class PlayerChooser extends ListGUI<Player> {
     }
 
     @Override
-    public IconProvider getEntryIcon(Player entry, int pos) {
+    public IconProvider getEntryIcon(Player viewer, Player entry, int pos) {
         return StaticIconProvider.builder()
                 .name("&f" + entry.getName())
                 .build();
     }
 
     @Override
-    public Button.Builder parseEntryButton(Player entry, int pos, Button.Builder button) {
-        return button.addClickHandler(ClickType.LEFT, ((player, ctx) -> player.sendMessage("Clicked on " + entry.getName())));
+    public Button.Builder parseEntryButton(Player viewer, Player entry, int pos, Button.Builder button) {
+        return button.addClickHandler(ClickType.LEFT, ((player, ctx) -> player.sendMessage("Clicked on " + entry.getName())), false);
     }
 
     @Override
-    public String getTitle() {
+    public String getTitle(Player viewer) {
         return "PlayerChooser example";
     }
-    public GUI get(int page) throws PagerException {
-        return get(new ArrayList<>(Bukkit.getOnlinePlayers()), page);
+    public GUI get(Player p, int page) throws PagerException {
+        return get(p, new ArrayList<>(Bukkit.getOnlinePlayers()), page);
     }
 }

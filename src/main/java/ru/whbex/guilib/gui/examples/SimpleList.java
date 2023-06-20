@@ -2,6 +2,7 @@ package ru.whbex.guilib.gui.examples;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import ru.whbex.guilib.gui.Button;
 import ru.whbex.guilib.gui.GUI;
 import ru.whbex.guilib.gui.GUIManager;
@@ -18,7 +19,7 @@ public class SimpleList extends ListGUI<String> {
     }
 
     @Override
-    public IconProvider getEntryIcon(String entry, int pos) {
+    public IconProvider getEntryIcon(Player viewer, String entry, int pos) {
         return StaticIconProvider.builder()
                 .name("&f" + entry)
                 .material(Material.STONE)
@@ -27,12 +28,12 @@ public class SimpleList extends ListGUI<String> {
     }
 
     @Override
-    public Button.Builder parseEntryButton(String entry, int pos, Button.Builder button) {
+    public Button.Builder parseEntryButton(Player viewer, String entry, int pos, Button.Builder button) {
         return button;
     }
 
     @Override
-    public String getTitle() {
+    public String getTitle(Player viewer) {
         return "Simple list example";
     }
 }

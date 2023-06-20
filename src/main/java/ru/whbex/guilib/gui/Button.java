@@ -13,9 +13,9 @@ import java.util.Map;
 public class Button {
 
     private IconProvider icon;
+    private IconProvider placeholder;
     private final Map<ClickType, ClickHandler> clickHandlers = new HashMap<>();
-    private final Map<ClickType, Sound> soundSuccessMap = new HashMap<>();
-    private final Map<ClickType, Sound> soundFailMap = new HashMap<>();
+    private boolean async = false;
     private Button(IconProvider iconProvider){
         this.icon = iconProvider;
     }
@@ -23,6 +23,15 @@ public class Button {
 
     public IconProvider getIconProvider() {
         return icon;
+    }
+    public boolean async(){
+        return async;
+    }
+    public boolean hasPlaceholder(){
+        return placeholder != null;
+    }
+    public IconProvider getPlaceholder(){
+        return placeholder;
     }
 
     public ClickHandler getClickHandler(ClickType type) {
@@ -44,9 +53,15 @@ public class Button {
             inst.clickHandlers.put(type, handler);
             return this;
         }
-        public Builder addClickHandler(ClickType type, ClickCallback callback){
-            inst.clickHandlers.put(type, new ClickHandler(type, callback));
+        public Builder addClickHandler(ClickType type, ClickCallback callback, boolean async){
+            inst.clickHandlers.put(type, new ClickHandler(type, callback, null, async));
             return this;
+        }
+        public Builder addClickHandler(ClickType type, ClickCallback callback){
+            return this.addClickHandler(type, callback, false);
+        }
+        public Builder addClickHandler(ClickCallback callback){
+            return this.addClickHandler(ClickType.LEFT, callback, false);
         }
         public Builder addSoundFail(ClickType type, Sound sound){
             getClickHandler(type).sound().setFail(sound);
@@ -54,6 +69,14 @@ public class Button {
         }
         public Builder addSoundSuccess(ClickType type, Sound sound){
             getClickHandler(type).sound().setSuccess(sound);
+            return this;
+        }
+        public Builder async(){
+            inst.async = !inst.async;
+            return this;
+        }
+        public Builder placeholder(IconProvider iconProvider){
+            inst.placeholder = iconProvider;
             return this;
         }
         public Button build(){

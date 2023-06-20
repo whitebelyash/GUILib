@@ -13,10 +13,12 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitTask;
 import ru.whbex.guilib.GUILib;
 import ru.whbex.guilib.gui.click.ClickCallback;
 import ru.whbex.guilib.gui.click.ClickHandler;
 import ru.whbex.guilib.gui.click.ClickSound;
+import ru.whbex.guilib.util.ExtraUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -70,9 +72,9 @@ public class GUIManager {
         return this.sharedHandlers.containsKey(pos);
     }
 
-    public void open(Player player, GUI gui){
+    public void open(Player player, GUI gui) {
         logd("Open GUI " + gui.getName() + " (p: " + player.getName() + ")");
-        if (gui.getSize() < 1 || gui.getSize() > 6){
+        if (gui.getSize() < 1 || gui.getSize() > 6) {
             GUILib.LOGGER.info("Invalid gui size " + gui.getSize());
             return;
         }
@@ -83,24 +85,13 @@ public class GUIManager {
         GUIInstance inv = use_gi ?
                 getGUIInstance(player) :
                 new GUIInstance(this, player.openInventory(bukkitInv), bukkitInv, gui, player);
-        if(use_gi){
+        if (use_gi) {
             logd("Reusing old GUIInstance");
             bukkitInv.clear();
             inv.setGUI(gui);
             inv.getView().setTitle(gui.getName());
         }
-        for(Map.Entry<Integer, Button> e : gui.getButtons().entrySet()){
-            if(e.getValue() == null)
-                continue;
-            ItemStack is = !e.getValue().getIconProvider().requireContext() ?
-                    e.getValue().getIconProvider().getIcon(null) :
-                    e.getValue().getIconProvider().getIcon(new GUIContext(this, gui, inv, e.getKey(), null, player, GUIContext.ContextType.OPEN));
-            if(is == null){
-                GUILib.LOGGER.warning("Null item stack detected at " + e.getKey());
-                continue;
-            }
-            bukkitInv.setItem(e.getKey(), is);
-        }
+        inv.updateAll();
         guiHolders.put(player, inv);
     }
     public void close(Player player){
@@ -128,10 +119,10 @@ public class GUIManager {
             logd("Invalid click position!");
             return true;
         }
-        if(gui.getButton(pos) == null) {
+        if(gi.getButton(pos) == null) {
             return true;
         }
-        ClickHandler handler  = gui.getButton(pos).getClickHandler(clickType);
+        ClickHandler handler  = gi.getButton(pos).getClickHandler(clickType);
         if(handler == null){
             logd("Handler not set! GUI: " + gui.getName() + ", pos: " + pos + ", type: " + clickType);
             return true;
@@ -139,13 +130,21 @@ public class GUIManager {
         // Callback is null - do nothing
         if(handler.callback() == null)
             return true;
-        handler.callback().call(player, ctx);
-        boolean result = ctx.clickResult();
-        logd("Click result: " + result);
-        if(handler.sound() != null){
-            logd("Playing sound " + handler.sound().getSound(result));
-            ClickSound.playSound(player, handler.sound(), result);
-        }
+        Runnable task = () -> {
+            logd("Running async (other thread): " + !Bukkit.isPrimaryThread());
+            logd("Running async (ClickHandler async): " + handler.async());
+            handler.callback().call(player, ctx);
+            boolean result = ctx.clickResult();
+            logd("Click result: " + result);
+            if(handler.sound() != null){
+                logd("Playing sound " + handler.sound().getSound(result));
+                ClickSound.playSound(player, handler.sound(), result);
+            }
+        };
+        if(handler.async())
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, task);
+        else
+            Bukkit.getScheduler().runTask(plugin, task);
         return true;
 
     }
@@ -163,7 +162,6 @@ public class GUIManager {
     public final void logd(String msg){
         if(debug)
             GUILib.LOGGER.info("DBG(" + this.plugin.getName() + "): " + msg);
-
     }
 
 

@@ -8,6 +8,9 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import ru.whbex.guilib.GUILib;
+import ru.whbex.guilib.gui.Button;
+import ru.whbex.guilib.gui.icon.IconProvider;
+import ru.whbex.guilib.gui.icon.StaticIconProvider;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -43,5 +46,13 @@ public class ItemUtils {
     }
     public static ItemStack createItem(String name, Material material){
         return createItem(name, null, null, 1, material, true);
+    }
+    public static Button errBarrier(String msg, String... lore){
+        IconProvider barrier = StaticIconProvider.builder()
+                .material(Material.BARRIER)
+                .name(msg)
+                .lore(false, lore)
+                .build();
+        return Button.builder(barrier).build();
     }
 }
