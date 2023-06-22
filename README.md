@@ -2,8 +2,8 @@
 Library for inventory-based GUI (Bukkit).
 Still work-in-progress.
 
-## Install 
-1. Install
+## Installation
+1. Install to local repo
 
         $ mvn install
 2. Add as dependency
@@ -12,7 +12,7 @@ Still work-in-progress.
             <groupId>ru.whbex</groupId>
             <artifactId>GUILib</artifactId>
             <version>enter-guilib-version-here</version>
-           </dependency>
+         </dependency>
 
 
 ## Usage example
