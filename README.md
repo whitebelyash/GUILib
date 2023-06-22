@@ -16,7 +16,8 @@ Still work-in-progress.
 
 
 ## Usage example
-        private void showSimple(Player player, GUIManager gm){
+```java
+    private void showSimple(Player player, GUIManager gm){
             // Create simple icon
             // Color codes (&) are supported in both lore & name
             IconProvider icon = StaticIconProvider.builder()
@@ -41,5 +42,5 @@ Still work-in-progress.
                 .build();
             gm.open(player, gui); // Open GUI for player
     }
-    
+```    
 
