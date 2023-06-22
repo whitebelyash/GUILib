@@ -2,8 +2,8 @@
 Library for inventory-based GUI (Bukkit).
 Still work-in-progress.
 
-## Install 
-1. Install
+## Installation 
+1. Install to local repo
 
         $ mvn install
 2. Add as dependency
@@ -16,6 +16,7 @@ Still work-in-progress.
 
 
 ## Usage example
+    '''java
         private void showSimple(Player player, GUIManager gm){
             // Create simple icon
             // Color codes (&) are supported in both lore & name
@@ -41,5 +42,6 @@ Still work-in-progress.
                 .build();
             gm.open(player, gui); // Open GUI for player
     }
+    '''
     
 
