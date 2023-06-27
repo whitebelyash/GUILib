@@ -39,9 +39,9 @@ public class GUIManager {
         public void on(InventoryClickEvent e){
             if(!(e.getWhoClicked() instanceof Player))
                 return;
-            boolean result = handleClick(((Player) e.getWhoClicked()), e.getClick(), e.getSlot(), e.getClickedInventory());
-            e.setCancelled(result);
-
+            Boolean result = handleClick(((Player) e.getWhoClicked()), e.getClick(), e.getSlot(), e.getClickedInventory());
+            if(result != null)
+                e.setCancelled(result);
         }
     }
     private final boolean debug;
@@ -75,7 +75,7 @@ public class GUIManager {
     public void open(Player player, GUI gui) {
         logd("Open GUI " + gui.getName() + " (p: " + player.getName() + ")");
         if (gui.getSize() < 1 || gui.getSize() > 6) {
-            GUILib.LOGGER.info("Invalid gui size " + gui.getSize());
+            GUILib.LOGGER.warning("Invalid gui size " + gui.getSize());
             return;
         }
         boolean use_gi = GUILib.getInstance().config().REUSE_GI && isHoldingGUI(player) && getGUIInstance(player).getGui().getSize() == gui.getSize();
@@ -95,17 +95,17 @@ public class GUIManager {
         guiHolders.put(player, inv);
     }
     public void close(Player player){
-        logd("Closing GUI for " + player.getName());
         if(isHoldingGUI(player) && player.getOpenInventory() == getGUIInstance(player).getView()){
+            logd("Closing GUI for " + player.getName());
             player.closeInventory();
             guiHolders.remove(player);
         }
     }
 
-    private boolean handleClick(Player player, ClickType clickType, int pos, Inventory inv){
-        logd(String.format("Handling click by %s with type %s at position %d", player.getName(), clickType, pos));
+    private Boolean handleClick(Player player, ClickType clickType, int pos, Inventory inv){
         if(!isHoldingGUI(player))
-            return false;
+            return null;
+        logd(String.format("Handling click by %s with type %s at position %d", player.getName(), clickType, pos));
         GUIInstance gi = getGUIInstance(player);
         GUI gui = getGUIInstance(player).getGui();
         GUIContext ctx = new GUIContext(this, gui, gi, pos, clickType, player, GUIContext.ContextType.CLICK);
@@ -149,7 +149,6 @@ public class GUIManager {
 
     }
     private void handleClose(Player player, InventoryView view){
-        logd("Handling close (p: " + player.getName() + ")");
         if(guiHolders.containsKey(player)){
             if(view == null || guiHolders.get(player).getView() == view)
                 guiHolders.remove(player);
