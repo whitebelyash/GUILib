@@ -5,9 +5,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitTask;
 import ru.whbex.guilib.util.ExtraUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
@@ -20,6 +23,7 @@ public class GUIInstance {
     private final Map<Integer, Button> buttons = new ConcurrentHashMap<>();
     private final InventoryView view;
     private final Inventory inv;
+    private final List<BukkitTask> tasks;
     private GUI gui;
     private final Player player;
 
@@ -29,6 +33,7 @@ public class GUIInstance {
         this.inv = inv;
         this.gui = gui;
         this.player = player;
+        this.tasks = new ArrayList<>();
     }
 
     public GUI getGui() {
@@ -95,11 +100,14 @@ public class GUIInstance {
      * Update all buttons in GUI
      */
     public void updateAll(){
+        GUIContext ctx = new GUIContext(guiManager, gui, this, 0, null, player, GUIContext.ContextType.OPEN);
         gui.getButtons().forEach((pos, button) -> {
-            GUIContext ctx = button.getIconProvider().requireContext() ?
-                    new GUIContext(guiManager, gui, this, pos, null, player, GUIContext.ContextType.OPEN) :
-                    null;
-            this.updateButton(pos, ctx);
+            if (button.getIconProvider().requireContext()) {
+                ctx.setSlot(pos);
+                this.updateButton(pos, ctx);
+            } else {
+                this.updateButton(pos, null);
+            }
         });
     }
 
@@ -134,6 +142,16 @@ public class GUIInstance {
         if(!guiManager.isHoldingSameGUI(player, this))
             return;
         inv.setItem(pos, item);
+    }
+    void addTask(BukkitTask task){
+        this.tasks.add(task);
+    }
+    void removeTask(BukkitTask task){
+        this.tasks.remove(task);
+        task.cancel();
+    }
+    void cancelAllTasks(){
+        tasks.forEach(BukkitTask::cancel);
     }
 
 }
