@@ -4,19 +4,21 @@ Still work-in-progress.
 
 ## Installation
 1. Install to local repo
-
-        $ mvn install
+```shell
+   $ mvn install
+```
 2. Add as dependency
-
-        <dependency>
-            <groupId>ru.whbex</groupId>
-            <artifactId>GUILib</artifactId>
-            <version>enter-guilib-version-here</version>
-         </dependency>
-
+```xml
+    <dependency>
+        <groupId>ru.whbex</groupId>
+        <artifactId>GUILib</artifactId>
+        <version>enter-guilib-version-here</version>
+    </dependency>
+```
 
 ## Usage example
 ```java
+public class GUIExample {
     private void showSimple(Player player, GUIManager gm){
             // Create simple icon
             // Color codes (&) are supported in both lore & name
@@ -29,8 +31,9 @@ Still work-in-progress.
             // Create button
             Button b = Button.builder(icon)
                 .addClickHandler(ClickType.LEFT, ((player, ctx) -> {
-                    player.sendMessage("Really, it does nothing...")), false)
-                } // click callback
+                    player.sendMessage("Really, it does nothing...");
+                    // Callback code here
+                }), false) // click callback
                 // sound on success (ctx.clickResult() == true)
                 .addSoundSuccess(ClickType.LEFT, Sound.ENTITY_GHAST_SCREAM)
                 .build();
@@ -42,5 +45,7 @@ Still work-in-progress.
                 .build();
             gm.open(player, gui); // Open GUI for player
     }
-```    
+}
+```
+[More...](src/main/java/ru/whbex/guilib/gui/examples)
 
