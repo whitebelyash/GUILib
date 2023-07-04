@@ -47,7 +47,7 @@ public class GUIManager {
     private final boolean debug;
     private final Plugin plugin;
     private final Map<Player, GUIInstance> guiHolders = new HashMap<>();
-    private final Map<Integer, ClickCallback> sharedHandlers = new HashMap<>();
+    private final Map<Integer, ClickHandler> sharedHandlers = new HashMap<>();
     public GUIManager(Plugin plugin, boolean debug){
         this.plugin = plugin;
         this.debug = debug;
@@ -65,7 +65,7 @@ public class GUIManager {
     public GUIInstance getGUIInstance(Player player){
         return guiHolders.get(player);
     }
-    public void bindClick(int pos, ClickCallback handler){
+    public void bindClick(int pos, ClickHandler handler){
         this.sharedHandlers.put(pos, handler);
     }
     public boolean isClickShared(int pos){
@@ -79,17 +79,11 @@ public class GUIManager {
             return;
         }
         boolean use_gi = GUILib.getInstance().config().REUSE_GI && isHoldingGUI(player) && getGUIInstance(player).getGui().getSize() == gui.getSize();
-        Inventory bukkitInv = use_gi ?
-                getGUIInstance(player).getInventory() :
-                Bukkit.createInventory(player, gui.getInvSize(), gui.getName());
         GUIInstance inv = use_gi ?
                 getGUIInstance(player) :
-                new GUIInstance(this, player.openInventory(bukkitInv), bukkitInv, gui, player);
+                new GUIInstance(this, gui, player);
         if (use_gi) {
             logd("Reusing old GUIInstance");
-            bukkitInv.clear();
-            inv.setGUI(gui);
-            inv.getView().setTitle(gui.getName());
         }
         inv.updateAll();
         guiHolders.put(player, inv);
@@ -97,7 +91,7 @@ public class GUIManager {
     public void close(Player player){
         if(isHoldingGUI(player) && player.getOpenInventory() == getGUIInstance(player).getView()){
             logd("Closing GUI for " + player.getName());
-            player.closeInventory();
+            getGUIInstance(player).destroy();
             guiHolders.remove(player);
         }
     }
@@ -107,11 +101,14 @@ public class GUIManager {
             return null;
         logd(String.format("Handling click by %s with type %s at position %d", player.getName(), clickType, pos));
         GUIInstance gi = getGUIInstance(player);
-        GUI gui = getGUIInstance(player).getGui();
-        GUIContext ctx = new GUIContext(this, gui, gi, pos, clickType, player, GUIContext.ContextType.CLICK);
+        GUI gui = gi.getGui();
+        GUIContext ctx = gi.getContext();
+        ctx.setSlot(pos);
+        ctx.setClickType(clickType);
+        ctx.setContextType(GUIContext.ContextType.CLICK);
         if(sharedHandlers.containsKey(pos)){
-            sharedHandlers.get(pos).call(player, ctx);
-            return true;
+            sharedHandlers.get(pos).callback().call(player, ctx);
+            return ctx.clickResult();
         }
         if(inv != null && inv != gi.getInventory())
             return true;

@@ -1,5 +1,6 @@
 package ru.whbex.guilib.util;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -50,9 +51,28 @@ public class ItemUtils {
     public static Button errBarrier(String msg, String... lore){
         IconProvider barrier = StaticIconProvider.builder()
                 .material(Material.BARRIER)
-                .name(msg)
+                .name("&c" + msg)
                 .lore(false, lore)
                 .build();
         return Button.builder(barrier).build();
+    }
+    public static Button commandDispatcher(IconProvider icon, boolean close, String... args){
+        if(args.length < 1)
+            throw new IllegalArgumentException("Args not provided");
+        String cmd = args[0];
+        if(Bukkit.getPluginCommand(cmd) == null)
+            return Button.builder(icon)
+                    .addClickHandler(((player, ctx) -> {
+                        ctx.guiInstance().replaceTemp(errBarrier(Bukkit.spigot().getConfig().getString("messages.unknown-command",
+                                "Unknown command!")), ctx.pos(), ExtraUtils.asTicks(2), ctx);
+                    }))
+                    .build();
+        return Button.builder(icon)
+                .addClickHandler(((player, ctx) -> {
+                    Bukkit.dispatchCommand(player, String.join(" ", args));
+                    if(close)
+                        ctx.guiManager().close(player);
+                    }))
+                .build();
     }
 }

@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 /**
- * GUI Container. Represents currently open gui
+ * GUI Instance. Represents currently open gui
  */
 public class GUIInstance {
     private final GUIManager guiManager;
@@ -24,16 +24,20 @@ public class GUIInstance {
     private final InventoryView view;
     private final Inventory inv;
     private final List<BukkitTask> tasks;
+    private final GUIContext ctx;
     private GUI gui;
     private final Player player;
 
-    public GUIInstance(GUIManager guiManager, InventoryView view, Inventory inv, GUI gui, Player player) {
+    public GUIInstance(GUIManager guiManager, GUI gui, Player player) {
         this.guiManager = guiManager;
-        this.view = view;
-        this.inv = inv;
+
         this.gui = gui;
         this.player = player;
         this.tasks = new ArrayList<>();
+        this.ctx = new GUIContext(guiManager, gui, this, 0, null, player, GUIContext.ContextType.OPEN);
+        this.inv = Bukkit.createInventory(player, gui.getInvSize(), gui.getName(ctx));
+        this.view = player.openInventory(this.inv);
+        this.updateAll();
     }
 
     public GUI getGui() {
@@ -152,6 +156,23 @@ public class GUIInstance {
     }
     void cancelAllTasks(){
         tasks.forEach(BukkitTask::cancel);
+    }
+    void destroy(){
+        this.view.close();
+        cancelAllTasks();
+    }
+
+    GUIContext getContext(){
+        return ctx;
+    }
+    void reuse(GUI gui) throws IllegalArgumentException {
+        if(this.gui.getInvSize() != gui.getInvSize()){
+            throw new IllegalArgumentException("Cannot reuse GUIInstance: size is different");
+        }
+        this.gui = gui;
+        this.view.setTitle(gui.getName(ctx));
+        buttons.clear();
+        updateAll();
     }
 
 }
