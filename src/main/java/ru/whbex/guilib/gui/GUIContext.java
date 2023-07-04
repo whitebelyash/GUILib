@@ -14,10 +14,10 @@ public class GUIContext {
     private final GUI gui;
     private final GUIInstance gi;
     private boolean result = true;
-    private final int slot;
-    private final ClickType clickType;
+    private int slot;
+    private ClickType clickType;
     private final Player player;
-    private final ContextType ctxType;
+    private ContextType ctxType;
 
     public GUIContext(GUIManager guiManager, GUI gui, GUIInstance gi, int slot, ClickType clickType, Player player, ContextType ctxType) {
         this.guiManager = guiManager;
@@ -56,6 +56,15 @@ public class GUIContext {
     }
     public ContextType type() {
         return ctxType;
+    }
+    void setSlot(int s){
+        this.slot = s;
+    }
+    void setContextType(ContextType ct){
+        this.ctxType = ct;
+    }
+    void setClickType(ClickType ct){
+        this.clickType = ct;
     }
 
 
