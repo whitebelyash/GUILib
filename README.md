@@ -41,7 +41,7 @@ public class GUIExample {
             // Create GUI
             GUI gui = GUI.builder()
                 .name("Simple") // GUI (Inventory) title
-                .map(4, b) // Map button 'b' to slot 4
+                .set(4, b) // Set button 'b' at slot 4
                 .size(1) // Inventory size (in lines)
                 .build();
             gm.open(player, gui); // Open GUI for player
