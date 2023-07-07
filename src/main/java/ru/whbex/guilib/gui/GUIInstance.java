@@ -20,7 +20,8 @@ import java.util.function.Supplier;
  */
 public class GUIInstance {
     private final GUIManager guiManager;
-    private final Map<Integer, Button> buttons = new ConcurrentHashMap<>();
+    private final Map<Integer, Button> buttons = new HashMap<>();
+    private final List<Integer> throttleList = new ArrayList<>();
     private final InventoryView view;
     private final Inventory inv;
     private final List<BukkitTask> tasks;
@@ -175,6 +176,20 @@ public class GUIInstance {
         this.view.setTitle(gui.getName(ctx));
         buttons.clear();
         updateAll();
+    }
+
+    public void addThrottle(int pos, long time){
+        if(throttleList.contains(pos))
+            return;
+        throttleList.add(pos);
+        BukkitTask t = Bukkit.getScheduler().runTaskLater(guiManager.getPlugin(), () -> throttleList.remove(pos), ExtraUtils.asTicks(time));
+    }
+    public boolean isThrottled(int pos){
+        return throttleList.contains(pos);
+    }
+    public void removeThrottle(int pos){
+        if(throttleList.contains(pos))
+            throttleList.remove(pos);
     }
 
 }

@@ -172,6 +172,8 @@ public class GUIManager {
             runClickTask(sharedHandlers.get(pos), player, ctx);
             return true;
         }
+        if(gi.isThrottled(pos))
+            return true;
         if(inv != null && inv != gi.getInventory())
             return true;
         if(pos > gui.getInvSize()) {
@@ -182,10 +184,6 @@ public class GUIManager {
             return true;
         }
         Button b = gi.getButton(pos);
-        if(throttled.containsKey(player)){
-            if(b == throttled.get(player))
-                return true;
-        }
 
         ClickHandler handler  = b.getClickHandler(clickType);
         if(handler == null){
@@ -198,8 +196,7 @@ public class GUIManager {
         runClickTask(handler, player, ctx);
         logd("Throttle: " + b.getThrottle());
         if(b.getThrottle() > 0){
-            throttled.put(player, b);
-            Bukkit.getScheduler().runTaskLater(plugin, () -> throttled.remove(player), b.getThrottle());
+            gi.addThrottle(pos, b.getThrottle());
         }
         return true;
 
