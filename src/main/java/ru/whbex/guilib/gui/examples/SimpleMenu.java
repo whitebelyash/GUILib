@@ -1,7 +1,6 @@
 package ru.whbex.guilib.gui.examples;
 
 import org.bukkit.Material;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import ru.whbex.guilib.gui.*;
 import ru.whbex.guilib.gui.click.ClickCallback;
@@ -11,7 +10,7 @@ import ru.whbex.guilib.gui.icon.StaticIconProvider;
 import ru.whbex.guilib.gui.icon.StubIconProvider;
 import ru.whbex.guilib.util.ExtraUtils;
 import ru.whbex.guilib.util.ItemUtils;
-import ru.whbex.guilib.util.PatternParser;
+import ru.whbex.guilib.util.PatternUtils;
 
 @Pattern({
         "#####a###",
@@ -55,7 +54,7 @@ public class SimpleMenu {
     private final GUI gui;
     public SimpleMenu(){
         GUI.Builder guibuilder = GUI.builder();
-        PatternParser.parse(this.getClass().getAnnotation(Pattern.class).value(), guibuilder);
+        PatternUtils.parse(this.getClass().getAnnotation(Pattern.class).value(), guibuilder);
         guibuilder.map('a', Button.builder(A_ICON).addClickHandler(CLICK_CALLBACK).build());
         guibuilder.map('b', Button.builder(B_ICON).addClickHandler(CLICK_CALLBACK).build());
         guibuilder.map('c', Button.builder(C_ICON).addClickHandler(CLICK_CALLBACK).build());

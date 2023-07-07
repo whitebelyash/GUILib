@@ -2,14 +2,12 @@ package ru.whbex.guilib.util.misc;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
 import ru.whbex.guilib.gui.*;
-import ru.whbex.guilib.gui.click.ClickCallback;
 import ru.whbex.guilib.gui.icon.IconProvider;
 import ru.whbex.guilib.gui.icon.StaticIconProvider;
 import ru.whbex.guilib.util.ExtraUtils;
 import ru.whbex.guilib.util.pager.Pager;
-import ru.whbex.guilib.util.PatternParser;
+import ru.whbex.guilib.util.PatternUtils;
 import ru.whbex.guilib.util.pager.PagerException;
 
 import java.util.List;
@@ -35,7 +33,7 @@ public abstract class ListGUI<T> {
             throw new IllegalStateException("Pattern is not set for this class!");
         }
         pageSize = ExtraUtils.arrayCharCount(LIST_ENTRY_CHAR, p.value());
-        PatternParser.parse(p.value(), gui);
+        PatternUtils.parse(p.value(), gui);
         this.gui = gui;
         this.gm = guiManager;
         this.showPane = alwaysShowNavPane;

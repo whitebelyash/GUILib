@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 public class GUI {
     private static final int INV_LINE_SIZE = 9;
     private Function<GUIContext, String> name = ctx -> "Default GUI";
-    private Map<Integer, Button> buttons = new ConcurrentHashMap<>();
+    private Map<Integer, Button> buttons = new HashMap<>();
     private Map<Character, List<Integer>> charPos = new HashMap<>();
     // in columns
     private int size = 1;
@@ -52,7 +52,7 @@ public class GUI {
 
 
     public class Builder {
-        private Iterator<Integer> mapIter;
+        private Pattern pattern;
 
         public Builder name(String name){
             GUI.this.name = ctx -> name;
@@ -62,52 +62,14 @@ public class GUI {
             GUI.this.name = name;
             return this;
         }
-        public Builder map(int pos, Button button) throws IllegalArgumentException{
-            if(button == null)
-                return this;
-            if(pos < 0)
-                throw new IllegalArgumentException("Button position must be a positive number!");
-            if (pos > size*INV_LINE_SIZE)
-                throw new IllegalArgumentException("Button position is bigger than GUI size!");
-            buttons.put(pos, button);
+        public Builder set(int pos, Button b) throws IllegalArgumentException {
+            if(pos < 1 || pos > size*9)
+                throw new IllegalArgumentException("Invalid position!");
+            GUI.this.buttons.put(pos, b);
             return this;
         }
-        public Builder map(char patternChar, Button button) throws IllegalArgumentException {
-            if(button == null)
-                return this;
-            if(!charPos.containsKey(patternChar))
-                throw new IllegalArgumentException("Unknown pattern character " + patternChar);
-            List<Integer> positions = charPos.getOrDefault(patternChar, new ArrayList<>());
-            positions.forEach(pos -> buttons.put(pos, button));
-            return this;
-        }
-        public Builder mapOnce(char patternChar, Button button){
-            if(button == null)
-                return this;
-            if(!charPos.containsKey(patternChar)){
-                throw new IllegalArgumentException("Unknown pattern character " + patternChar);
-            }
-            if(charPos.get(patternChar).isEmpty()) {
-                map(patternChar, button);
-                return this;
-            }
-            if(mapIter == null){
-                mapIter = charPos.get(patternChar).iterator();
-                buttons.put(charPos.get(patternChar).get(0), button);
-            }
-            if(mapIter.hasNext()){
-                buttons.put(mapIter.next(), button);
-            }
-            return this;
-        }
-        public Builder charToPos(int pos, char c) throws IllegalArgumentException {
-            if(pos < 0)
-                throw new IllegalArgumentException("Char position must be a positive number!");
-            if(pos > size*INV_LINE_SIZE)
-                throw new IllegalArgumentException("Button position is bigger than GUI Size");
-            List<Integer> positions = charPos.getOrDefault(c, new ArrayList<>());
-            positions.add(pos);
-            GUI.this.charPos.put(c, positions);
+        public Builder map(char c, Button b) throws IllegalArgumentException {
+            set(pattern.getCharPos(c), b);
             return this;
         }
         public Builder size(int s) throws IllegalArgumentException {
@@ -118,8 +80,11 @@ public class GUI {
             GUI.this.size = s;
             return this;
         }
+        public Builder fromPattern(Pattern pattern){
+            this.pattern = pattern;
+            return this;
+        }
         public GUI build(){
-
             return GUI.this;
         }
         }

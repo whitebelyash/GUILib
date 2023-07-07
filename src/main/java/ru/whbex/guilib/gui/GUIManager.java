@@ -48,10 +48,12 @@ public class GUIManager {
     private final Plugin plugin;
     private final Map<Player, GUIInstance> guiHolders = new HashMap<>();
     private final Map<Integer, ClickHandler> sharedHandlers = new HashMap<>();
+    private final Map<Player, Button> throttled = new HashMap<>();
     public GUIManager(Plugin plugin, boolean debug){
         this.plugin = plugin;
         this.debug = debug;
         Bukkit.getPluginManager().registerEvents(new GUIListener(), plugin);
+        logd("registered for " + plugin.getName());
 
 
     }
@@ -84,8 +86,9 @@ public class GUIManager {
                 new GUIInstance(this, gui, player);
         if (use_gi) {
             logd("Reusing old GUIInstance");
+            inv.reuse(gui);
+            return;
         }
-        inv.updateAll();
         guiHolders.put(player, inv);
     }
     public void close(Player player){
@@ -107,8 +110,8 @@ public class GUIManager {
         ctx.setClickType(clickType);
         ctx.setContextType(GUIContext.ContextType.CLICK);
         if(sharedHandlers.containsKey(pos)){
-            sharedHandlers.get(pos).callback().call(player, ctx);
-            return ctx.clickResult();
+            runClickTask(sharedHandlers.get(pos), player, ctx);
+            return true;
         }
         if(inv != null && inv != gi.getInventory())
             return true;
@@ -119,7 +122,13 @@ public class GUIManager {
         if(gi.getButton(pos) == null) {
             return true;
         }
-        ClickHandler handler  = gi.getButton(pos).getClickHandler(clickType);
+        Button b = gi.getButton(pos);
+        if(throttled.containsKey(player)){
+            if(b == throttled.get(player))
+                return true;
+        }
+
+        ClickHandler handler  = b.getClickHandler(clickType);
         if(handler == null){
             logd("Handler not set! GUI: " + gui.getName() + ", pos: " + pos + ", type: " + clickType);
             return true;
@@ -127,9 +136,20 @@ public class GUIManager {
         // Callback is null - do nothing
         if(handler.callback() == null)
             return true;
+        runClickTask(handler, player, ctx);
+        logd("Throttle: " + b.getThrottle());
+        if(b.getThrottle() > 0){
+            throttled.put(player, b);
+            Bukkit.getScheduler().runTaskLater(plugin, () -> throttled.remove(player), b.getThrottle());
+        }
+        return true;
+
+    }
+    private void runClickTask(ClickHandler handler, Player player, GUIContext ctx){
         Runnable task = () -> {
             logd("Running async (other thread): " + !Bukkit.isPrimaryThread());
             logd("Running async (ClickHandler async): " + handler.async());
+
             handler.callback().call(player, ctx);
             boolean result = ctx.clickResult();
             logd("Click result: " + result);
@@ -142,8 +162,6 @@ public class GUIManager {
             Bukkit.getScheduler().runTaskAsynchronously(plugin, task);
         else
             Bukkit.getScheduler().runTask(plugin, task);
-        return true;
-
     }
     private void handleClose(Player player, InventoryView view){
         if(guiHolders.containsKey(player)){
