@@ -6,6 +6,9 @@ import org.bukkit.event.inventory.ClickType;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * ClickHandler. Nothing more
+ */
 public class ClickHandler {
     private final ClickType clickType;
     private final ClickCallback callback;

@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 /**
- * GUI Instance. Represents currently open gui
+ * GUI Instance. Represents currently opened gui
  */
 public class GUIInstance {
     private final GUIManager guiManager;
@@ -123,13 +123,15 @@ public class GUIInstance {
      * @param ctx gui context
      */
     public void replaceLater(Button button, int pos, long time, GUIContext ctx){
-        Bukkit.getScheduler().runTaskLater(guiManager.getPlugin(),
+        BukkitTask t = Bukkit.getScheduler().runTaskLater(guiManager.getPlugin(),
                 () -> {
                     if(!guiManager.isHoldingSameGUI(player, this))
                         return;
                     this.setButton(pos, button, ctx);
                 }, time);
+        addTask(t);
     }
+
     /**
      * Temporarily replace button
      * @param button temp button

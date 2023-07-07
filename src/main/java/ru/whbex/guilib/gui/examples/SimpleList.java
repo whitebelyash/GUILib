@@ -12,6 +12,9 @@ import ru.whbex.guilib.util.misc.ListGUI;
 
 import java.util.Collections;
 
+/**
+ * Simple list. Displays provided list
+ */
 public class SimpleList extends ListGUI<String> {
 
     public SimpleList(GUIManager guiManager) {

@@ -5,6 +5,9 @@ import ru.whbex.guilib.gui.GUIContext;
 
 import java.util.function.Function;
 
+/**
+ * Function-based icon provider. Makes icon in runtime (when GUI is opening)
+ */
 public class DynamicIconProvider implements IconProvider {
     public DynamicIconProvider(Function<GUIContext, ItemStack> supplier){
         this.itemSupplier = supplier;

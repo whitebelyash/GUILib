@@ -4,6 +4,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+/**
+ * GUI Container. Contains buttons and their positions
+ */
 public class GUI {
     private static final int INV_LINE_SIZE = 9;
     private Function<GUIContext, String> name = ctx -> "Default GUI";
@@ -23,9 +26,19 @@ public class GUI {
         return name;
     }
 
+    /**
+     * Get GUI Size in lines
+     * @return size
+     */
+
     public int getSize() {
         return size;
     }
+
+    /**
+     * Get GUI Size in slots
+     * @return slot amount
+     */
     public int getInvSize(){
         return size*INV_LINE_SIZE;
     }
@@ -36,6 +49,8 @@ public class GUI {
     public Button getButton(int pos) {
         return buttons.get(pos);
     }
+    // Maybe remove this... GUI is designed to be immutable, actually
+    // Use GUIInstance if u want to change GUI
     void setButton(int pos, Button button){
         if(pos < 0 || pos > getInvSize())
             throw new IllegalArgumentException("Size is invalid!");
@@ -53,34 +68,112 @@ public class GUI {
 
     public class Builder {
         private Pattern pattern;
+        private Iterator<Integer> posIterator;
+
+        /**
+         * Sets GUI Name (Title) without context
+         * @param name Title
+         */
 
         public Builder name(String name){
             GUI.this.name = ctx -> name;
             return this;
         }
+
+        /**
+         * Sets GUI Name (Title) with context
+         * @param name Name Function
+         */
         public Builder name(Function<GUIContext, String> name){
             GUI.this.name = name;
             return this;
         }
+
+        /**
+         * Sets button to slot
+         * @param pos button slot
+         * @param b button
+         * @throws IllegalArgumentException if position is invalid
+         */
         public Builder set(int pos, Button b) throws IllegalArgumentException {
             if(pos < 1 || pos > size*9)
                 throw new IllegalArgumentException("Invalid position!");
             GUI.this.buttons.put(pos, b);
             return this;
         }
-        public Builder map(char c, Button b) throws IllegalArgumentException {
-            set(pattern.getCharPos(c), b);
+
+        /**
+         * Maps button to specified character positions. fromPattern() is required for this
+         * @param c Character
+         * @param b Button
+         * @throws IllegalArgumentException if pattern doesn't contain this character
+         * @throws NullPointerException if pattern is unset
+         */
+        public Builder map(char c, Button b) throws IllegalArgumentException,NullPointerException {
+            if(pattern == null)
+                throw new NullPointerException("Pattern is null!");
+            pattern.getCharPos(c).forEach(p -> set(p, b));
             return this;
         }
-        public Builder size(int s) throws IllegalArgumentException {
+
+        /**
+         * Maps button to a character position and creates an iterator.
+         * Next calls to this method with the same character will set another button to the position until the iterator end is reached.
+         * Does nothing if iterator end is reached.
+         * @param c Character
+         * @param b Button to set
+         * @throws IllegalArgumentException If character has only one position
+         * @throws NullPointerException If pattern is unset
+         */
+        public Builder mapOnce(char c, Button b) throws IllegalArgumentException, NullPointerException {
+            if(pattern == null)
+                throw new NullPointerException("Pattern is null!");
+            if(!pattern.hasMultiplePositions(c))
+                throw new IllegalArgumentException("Character has only one position!");
+            posIterator = pattern.getCharPos(c).iterator();
+            if(!posIterator.hasNext())
+                return this;
+            int pos = posIterator.next();
+            set(pos, b);
+            return this;
+        }
+
+        /**
+         * Map remaining positions in iterator to button
+         * @param b Button to set
+         * @throws NullPointerException If iterator is null
+         */
+        public Builder mapRemaining(Button b) throws NullPointerException {
+            if(posIterator == null)
+                throw new NullPointerException("Position iterator is null!");
+            posIterator.forEachRemaining(i -> set(i, b));
+            return this;
+        }
+
+        /**
+         * Applies inventory size in lines
+         * @param s line amount
+         * @throws IllegalArgumentException if size is invalid
+         * @throws IllegalStateException if size is already set by pattern
+         */
+        public Builder size(int s) throws IllegalArgumentException, IllegalStateException {
             if(s < 1)
                 throw new IllegalArgumentException("GUI Size must be a positive number!");
             if(s > 6)
-                throw new IllegalArgumentException("Line count is too big!");
+                throw new IllegalArgumentException("Size is too big!");
+            if(pattern != null && size > 0)
+                throw new IllegalStateException("Size is already set by pattern!");
             GUI.this.size = s;
             return this;
         }
+
+        /**
+         * Use pattern for GUI building
+         * @param pattern Pattern
+         */
         public Builder fromPattern(Pattern pattern){
+            if(pattern == null)
+                throw new NullPointerException("Pattern is null!");
             this.pattern = pattern;
             return this;
         }

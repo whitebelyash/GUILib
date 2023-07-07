@@ -11,6 +11,9 @@ import ru.whbex.guilib.util.ExtraUtils;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Button. Contains icon and ClickHandler
+ */
 public class Button {
 
     private IconProvider icon;
