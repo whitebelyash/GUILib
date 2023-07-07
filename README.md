@@ -13,6 +13,7 @@ Still work-in-progress.
         <groupId>ru.whbex</groupId>
         <artifactId>GUILib</artifactId>
         <version>enter-guilib-version-here</version>
+        <scope>provided</scope>
     </dependency>
 ```
 
