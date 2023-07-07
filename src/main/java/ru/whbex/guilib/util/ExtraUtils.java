@@ -28,4 +28,13 @@ public class ExtraUtils {
     public static long asSecs(long ticks){
         return ticks/20;
     }
+    public static int stringLengthArray(String... array){
+        int ret = 0;
+        for(String s : array){
+            for(char c : s.toCharArray()){
+                ret++;
+            }
+        }
+        return ret;
+    }
 }

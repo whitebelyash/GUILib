@@ -68,7 +68,7 @@ public class GUI {
 
     public class Builder {
         private Pattern pattern;
-        private Iterator<Integer> posIterator;
+        private Map<Character, Iterator<Integer>> posIteratorMap;
 
         /**
          * Sets GUI Name (Title) without context
@@ -96,7 +96,7 @@ public class GUI {
          * @throws IllegalArgumentException if position is invalid
          */
         public Builder set(int pos, Button b) throws IllegalArgumentException {
-            if(pos < 1 || pos > size*9)
+            if(pos < 0 || pos > size*9)
                 throw new IllegalArgumentException("Invalid position!");
             GUI.this.buttons.put(pos, b);
             return this;
@@ -130,7 +130,9 @@ public class GUI {
                 throw new NullPointerException("Pattern is null!");
             if(!pattern.hasMultiplePositions(c))
                 throw new IllegalArgumentException("Character has only one position!");
-            posIterator = pattern.getCharPos(c).iterator();
+            if(posIteratorMap == null || !posIteratorMap.containsKey(c))
+                posIteratorMap = Collections.singletonMap(c, pattern.getCharPos(c).iterator());
+            Iterator<Integer> posIterator = posIteratorMap.get(c);
             if(!posIterator.hasNext())
                 return this;
             int pos = posIterator.next();
@@ -144,9 +146,9 @@ public class GUI {
          * @throws NullPointerException If iterator is null
          */
         public Builder mapRemaining(Button b) throws NullPointerException {
-            if(posIterator == null)
+            if(posIteratorMap == null)
                 throw new NullPointerException("Position iterator is null!");
-            posIterator.forEachRemaining(i -> set(i, b));
+            posIteratorMap.values().forEach(i -> i.forEachRemaining(v -> set(v, b)));
             return this;
         }
 
@@ -157,7 +159,7 @@ public class GUI {
          * @throws IllegalStateException if size is already set by pattern
          */
         public Builder size(int s) throws IllegalArgumentException, IllegalStateException {
-            if(s < 1)
+            if(s < 0)
                 throw new IllegalArgumentException("GUI Size must be a positive number!");
             if(s > 6)
                 throw new IllegalArgumentException("Size is too big!");
@@ -174,6 +176,7 @@ public class GUI {
         public Builder fromPattern(Pattern pattern){
             if(pattern == null)
                 throw new NullPointerException("Pattern is null!");
+            size(pattern.getSize());
             this.pattern = pattern;
             return this;
         }

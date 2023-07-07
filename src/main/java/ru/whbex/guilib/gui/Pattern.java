@@ -1,5 +1,7 @@
 package ru.whbex.guilib.gui;
 
+import ru.whbex.guilib.GUILib;
+import ru.whbex.guilib.util.ExtraUtils;
 import ru.whbex.guilib.util.PatternUtils;
 
 import java.lang.annotation.Inherited;
@@ -12,9 +14,11 @@ import java.util.*;
 public class Pattern {
     public static final char EMPTY_CHAR = '#';
     private final Map<Character, Set<Integer>> charMap;
+    private final int size;
 
-    public Pattern(Map<Character, Set<Integer>> charMap){
+    public Pattern(Map<Character, Set<Integer>> charMap, int size){
         this.charMap = charMap;
+        this.size = size;
     }
 
     public Set<Integer> getCharPos(char c) throws IllegalArgumentException {
@@ -29,7 +33,7 @@ public class Pattern {
         return contains(c) && charMap.get(c).size() > 1;
     }
     public int getSize(){
-        return charMap.values().size();
+        return size;
     }
 
     public static Pattern fromStringArray(String... input){
@@ -48,7 +52,10 @@ public class Pattern {
                 pointer++;
             }
         }
-        return new Pattern(out);
+        int slotSize = ExtraUtils.stringLengthArray(structure);
+        int size = slotSize % 9 == 0 ? slotSize / 9 : (slotSize / 9) + 1;
+        GUILib.LOGGER.info("slotSize: " + slotSize + ", size: " + size);
+        return new Pattern(out, size);
     }
 
 
