@@ -6,14 +6,19 @@ import ru.whbex.guilib.gui.click.ClickCallback;
 import ru.whbex.guilib.gui.click.ClickHandler;
 import ru.whbex.guilib.gui.click.ClickSound;
 import ru.whbex.guilib.gui.icon.IconProvider;
+import ru.whbex.guilib.util.ExtraUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Button. Contains icon and ClickHandler
+ */
 public class Button {
 
     private IconProvider icon;
     private IconProvider placeholder;
+    private long throttle = ExtraUtils.asTicks(3);
     private final Map<ClickType, ClickHandler> clickHandlers = new HashMap<>();
     private boolean async = false;
     private Button(IconProvider iconProvider){
@@ -36,6 +41,9 @@ public class Button {
 
     public ClickHandler getClickHandler(ClickType type) {
         return clickHandlers.get(type);
+    }
+    public long getThrottle(){
+        return throttle;
     }
 
 
@@ -77,6 +85,12 @@ public class Button {
         }
         public Builder placeholder(IconProvider iconProvider){
             inst.placeholder = iconProvider;
+            return this;
+        }
+        public Builder throttle(long t){
+            if(t < 0)
+                throw new IllegalArgumentException("Throttle must be a positive number or 0");
+            inst.throttle = t;
             return this;
         }
         public Button build(){

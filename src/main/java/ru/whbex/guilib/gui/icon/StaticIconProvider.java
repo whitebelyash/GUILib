@@ -8,6 +8,10 @@ import ru.whbex.guilib.util.ItemUtils;
 
 import java.util.*;
 
+/**
+ * Static icon provider. Just returns a prebuilt ItemStack.
+ * Has a builder for simplified item creation
+ */
 public class StaticIconProvider implements IconProvider {
 
     private StaticIconProvider(){}

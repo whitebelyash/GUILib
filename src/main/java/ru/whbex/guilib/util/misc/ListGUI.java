@@ -2,19 +2,16 @@ package ru.whbex.guilib.util.misc;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
 import ru.whbex.guilib.gui.*;
-import ru.whbex.guilib.gui.click.ClickCallback;
 import ru.whbex.guilib.gui.icon.IconProvider;
 import ru.whbex.guilib.gui.icon.StaticIconProvider;
 import ru.whbex.guilib.util.ExtraUtils;
 import ru.whbex.guilib.util.pager.Pager;
-import ru.whbex.guilib.util.PatternParser;
+import ru.whbex.guilib.util.PatternUtils;
 import ru.whbex.guilib.util.pager.PagerException;
 
 import java.util.List;
 
-@Pattern({"lllllllll", "lllllllll", "lllllllll", "lllllllll", "lllllllll", "p#######n"})
 public abstract class ListGUI<T> {
     public static final char LIST_ENTRY_CHAR = 'l';
     public static final IconProvider NEXT_ICON = StaticIconProvider.builder().name("&aСледующая страница").build();
@@ -22,6 +19,8 @@ public abstract class ListGUI<T> {
     public static final IconProvider UNKNOWN_PAGE_ICON = StaticIconProvider.builder().name("Неизвестная страница").material(Material.BARRIER).build();
 
     public static final String LIST_TITLE = "#%d";
+    public static final String[] DEFAULT_PATTERN = {"lllllllll", "lllllllll", "lllllllll", "lllllllll", "lllllllll", "p#######n"};
+    private static final Pattern PATTERN = Pattern.fromStringArray(DEFAULT_PATTERN);
     private final GUI.Builder gui;
     protected final int pageSize;
     protected final GUIManager gm;
@@ -29,14 +28,9 @@ public abstract class ListGUI<T> {
 
     // Buttons
     public ListGUI(GUIManager guiManager, boolean alwaysShowNavPane){
-        GUI.Builder gui = GUI.builder();
-        Pattern p = this.getClass().getAnnotation(Pattern.class);
-        if(p == null){
-            throw new IllegalStateException("Pattern is not set for this class!");
-        }
-        pageSize = ExtraUtils.arrayCharCount(LIST_ENTRY_CHAR, p.value());
-        PatternParser.parse(p.value(), gui);
-        this.gui = gui;
+        this.gui = GUI.builder()
+                .fromPattern(PATTERN);
+        pageSize = ExtraUtils.arrayCharCount(LIST_ENTRY_CHAR, DEFAULT_PATTERN);
         this.gm = guiManager;
         this.showPane = alwaysShowNavPane;
     }

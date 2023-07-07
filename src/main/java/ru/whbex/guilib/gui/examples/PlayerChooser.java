@@ -15,6 +15,9 @@ import ru.whbex.guilib.util.pager.PagerException;
 import java.util.ArrayList;
 import java.util.function.Supplier;
 
+/**
+ * A simple player chooser menu. Shows player nickname on click
+ */
 public class PlayerChooser extends ListGUI<Player> {
 
     public PlayerChooser(GUIManager guiManager, boolean alwaysShowNavPane) {

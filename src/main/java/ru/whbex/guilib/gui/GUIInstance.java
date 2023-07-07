@@ -16,11 +16,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 /**
- * GUI Instance. Represents currently open gui
+ * GUI Instance. Represents currently opened gui
  */
 public class GUIInstance {
     private final GUIManager guiManager;
-    private final Map<Integer, Button> buttons = new ConcurrentHashMap<>();
+    private final Map<Integer, Button> buttons = new HashMap<>();
+    private final List<Integer> throttleList = new ArrayList<>();
     private final InventoryView view;
     private final Inventory inv;
     private final List<BukkitTask> tasks;
@@ -123,13 +124,15 @@ public class GUIInstance {
      * @param ctx gui context
      */
     public void replaceLater(Button button, int pos, long time, GUIContext ctx){
-        Bukkit.getScheduler().runTaskLater(guiManager.getPlugin(),
+        BukkitTask t = Bukkit.getScheduler().runTaskLater(guiManager.getPlugin(),
                 () -> {
                     if(!guiManager.isHoldingSameGUI(player, this))
                         return;
                     this.setButton(pos, button, ctx);
                 }, time);
+        addTask(t);
     }
+
     /**
      * Temporarily replace button
      * @param button temp button
@@ -173,6 +176,20 @@ public class GUIInstance {
         this.view.setTitle(gui.getName(ctx));
         buttons.clear();
         updateAll();
+    }
+
+    public void addThrottle(int pos, long time){
+        if(throttleList.contains(pos))
+            return;
+        throttleList.add(pos);
+        BukkitTask t = Bukkit.getScheduler().runTaskLater(guiManager.getPlugin(), () -> throttleList.remove(pos), ExtraUtils.asTicks(time));
+    }
+    public boolean isThrottled(int pos){
+        return throttleList.contains(pos);
+    }
+    public void removeThrottle(int pos){
+        if(throttleList.contains(pos))
+            throttleList.remove(pos);
     }
 
 }

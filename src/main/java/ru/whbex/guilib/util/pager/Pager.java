@@ -3,6 +3,10 @@ package ru.whbex.guilib.util.pager;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * List paginator
+ * @param <T> list entry type
+ */
 public class Pager<T> {
 
     private final int size;

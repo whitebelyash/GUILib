@@ -3,8 +3,6 @@ package ru.whbex.guilib.gui;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
-
-
 public class GUIContext {
     public enum ContextType {
         OPEN,
@@ -75,5 +73,10 @@ public class GUIContext {
      */
     public boolean async(){
         return Bukkit.isPrimaryThread();
+    }
+    void reset(){
+        slot = 0;
+        ctxType = null;
+        clickType = null;
     }
 }

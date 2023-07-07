@@ -1,7 +1,6 @@
 package ru.whbex.guilib.gui.examples;
 
 import org.bukkit.Material;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import ru.whbex.guilib.gui.*;
 import ru.whbex.guilib.gui.click.ClickCallback;
@@ -11,14 +10,16 @@ import ru.whbex.guilib.gui.icon.StaticIconProvider;
 import ru.whbex.guilib.gui.icon.StubIconProvider;
 import ru.whbex.guilib.util.ExtraUtils;
 import ru.whbex.guilib.util.ItemUtils;
-import ru.whbex.guilib.util.PatternParser;
+import ru.whbex.guilib.util.PatternUtils;
 
-@Pattern({
-        "#####a###",
-        "####b####",
-        "#c#d#e#f#"
-})
+/**
+ * Simple menu. Just a pattern showcase
+ */
 public class SimpleMenu {
+    private static final Pattern PATTERN = Pattern.fromStringArray(
+            "#####a###",
+            "####b####",
+            "#c#d#e#f#");
     private static SimpleMenu inst;
     private static final IconProvider A_ICON = StaticIconProvider.builder()
             .name("A Button")
@@ -54,16 +55,15 @@ public class SimpleMenu {
             ctx.guiInstance().replaceTemp(ItemUtils.errBarrier("Click!"), ctx.pos(), ExtraUtils.asTicks(3), ctx);
     private final GUI gui;
     public SimpleMenu(){
-        GUI.Builder guibuilder = GUI.builder();
-        PatternParser.parse(this.getClass().getAnnotation(Pattern.class).value(), guibuilder);
-        guibuilder.map('a', Button.builder(A_ICON).addClickHandler(CLICK_CALLBACK).build());
-        guibuilder.map('b', Button.builder(B_ICON).addClickHandler(CLICK_CALLBACK).build());
-        guibuilder.map('c', Button.builder(C_ICON).addClickHandler(CLICK_CALLBACK).build());
-        guibuilder.map('d', Button.builder(D_ICON).addClickHandler(CLICK_CALLBACK).build());
-        guibuilder.map('e', Button.builder(E_ICON).addClickHandler(CLICK_CALLBACK).build());
-        guibuilder.map('f', Button.builder(F_ICON).addClickHandler(CLICK_CALLBACK).build());
-        guibuilder.name("SimpleMenu Example");
-        gui = guibuilder.build();
+        gui = GUI.builder().fromPattern(PATTERN)
+            .map('a', Button.builder(A_ICON).addClickHandler(CLICK_CALLBACK).build())
+            .map('b', Button.builder(B_ICON).addClickHandler(CLICK_CALLBACK).build())
+            .map('c', Button.builder(C_ICON).addClickHandler(CLICK_CALLBACK).build())
+            .map('d', Button.builder(D_ICON).addClickHandler(CLICK_CALLBACK).build())
+            .map('e', Button.builder(E_ICON).addClickHandler(CLICK_CALLBACK).build())
+            .map('f', Button.builder(F_ICON).addClickHandler(CLICK_CALLBACK).build())
+            .name("SimpleMenu Example")
+                .build();
     }
     public static SimpleMenu instance(){
         if(inst == null)
