@@ -1,16 +1,12 @@
-package ru.whbex.guilib.gui.examples;
+package ru.whbex.guilib.examples;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import ru.whbex.guilib.gui.Button;
-import ru.whbex.guilib.gui.GUI;
 import ru.whbex.guilib.gui.GUIManager;
 import ru.whbex.guilib.gui.icon.IconProvider;
 import ru.whbex.guilib.gui.icon.StaticIconProvider;
 import ru.whbex.guilib.util.misc.ListGUI;
-
-import java.util.Collections;
 
 /**
  * Simple list. Displays provided list

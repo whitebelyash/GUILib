@@ -1,4 +1,4 @@
-package ru.whbex.guilib.gui.examples;
+package ru.whbex.guilib.examples;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -6,14 +6,12 @@ import org.bukkit.event.inventory.ClickType;
 import ru.whbex.guilib.gui.Button;
 import ru.whbex.guilib.gui.GUI;
 import ru.whbex.guilib.gui.GUIManager;
-import ru.whbex.guilib.gui.icon.DynamicIconProvider;
 import ru.whbex.guilib.gui.icon.IconProvider;
 import ru.whbex.guilib.gui.icon.StaticIconProvider;
 import ru.whbex.guilib.util.misc.ListGUI;
 import ru.whbex.guilib.util.pager.PagerException;
 
 import java.util.ArrayList;
-import java.util.function.Supplier;
 
 /**
  * A simple player chooser menu. Shows player nickname on click

@@ -48,5 +48,5 @@ public class GUIExample {
     }
 }
 ```
-[More...](src/main/java/ru/whbex/guilib/gui/examples)
+[More...](src/main/java/ru/whbex/guilib/examples)
 

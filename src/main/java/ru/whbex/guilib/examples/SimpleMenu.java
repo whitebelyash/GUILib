@@ -1,4 +1,4 @@
-package ru.whbex.guilib.gui.examples;
+package ru.whbex.guilib.examples;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -10,7 +10,6 @@ import ru.whbex.guilib.gui.icon.StaticIconProvider;
 import ru.whbex.guilib.gui.icon.StubIconProvider;
 import ru.whbex.guilib.util.ExtraUtils;
 import ru.whbex.guilib.util.ItemUtils;
-import ru.whbex.guilib.util.PatternUtils;
 
 /**
  * Simple menu. Just a pattern showcase
