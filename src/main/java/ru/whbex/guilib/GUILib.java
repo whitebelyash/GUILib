@@ -1,6 +1,7 @@
 package ru.whbex.guilib;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import ru.whbex.guilib.cmd.GuiCommand;
 import ru.whbex.guilib.gui.GUIManager;
 
 import java.util.logging.Logger;
@@ -17,7 +18,7 @@ public final class GUILib extends JavaPlugin {
         getLogger().info("Startup!");
         this.saveDefaultConfig();
         reloadConf();
-        this.getCommand("glreload").setExecutor(new GLReload());
+        this.getCommand("glreload").setExecutor(new GuiCommand());
 
     }
 
