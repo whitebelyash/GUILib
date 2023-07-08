@@ -118,8 +118,9 @@ public class GUI {
 
         /**
          * Maps button to a character position and creates an iterator.
-         * Next calls to this method with the same character will set another button to the position until the iterator end is reached.
+         * Next calls to this method with the same character will set another button to the next position of same char until the iterator end is reached.
          * Does nothing if iterator end is reached.
+         * fromPattern() is required for this
          * @param c Character
          * @param b Button to set
          * @throws IllegalArgumentException If character has only one position

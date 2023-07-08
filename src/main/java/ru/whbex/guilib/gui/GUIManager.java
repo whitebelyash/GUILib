@@ -154,7 +154,7 @@ public class GUIManager {
      * @param clickType Click type
      * @param pos Click position
      * @param inv Inventory
-     * @return Is click cancelled or not. If null - skips Event#setCancelled
+     * @return Is click cancelled or not. If null - skip Event#setCancelled
      */
     // TODO: Rework click handle result
 
