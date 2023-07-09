@@ -12,7 +12,7 @@ import java.util.*;
 
 
 public class Pattern {
-    public static final char EMPTY_CHAR = '#';
+    public static final char EMPTY_CHAR = ' ';
     private final Map<Character, Set<Integer>> charMap;
     private final int size;
 
