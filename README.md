@@ -17,6 +17,13 @@ Still work-in-progress.
     </dependency>
 ```
 
+## TODO
+- [ ] Finish ListGUI
+- [ ] Refactor click sounds
+- [ ] Add hooks support (for e.g. translating strings(lore,name) in StaticIconProvider)
+- [ ] Abstract library from Bukkit API
+- [ ] Use packets (NMS?) for GUI (will break api)
+
 ## Usage example
 ```java
 public class GUIExample {
