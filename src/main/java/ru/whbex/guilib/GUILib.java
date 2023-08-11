@@ -7,6 +7,7 @@ import ru.whbex.guilib.gui.GUIManager;
 import java.util.logging.Logger;
 
 public final class GUILib extends JavaPlugin {
+    public static final boolean DEBUG = true;
     public static Logger LOGGER;
     private static GUILib instance;
     private GLConfig conf;
@@ -31,6 +32,7 @@ public final class GUILib extends JavaPlugin {
         return instance;
     }
     public void reloadConf(){
+        this.reloadConfig();
         this.conf = new GLConfig(this.getConfig());
     }
     public GLConfig config(){
