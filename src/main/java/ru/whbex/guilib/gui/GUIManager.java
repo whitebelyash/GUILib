@@ -234,12 +234,19 @@ public class GUIManager {
                 guiHolders.remove(player);
         }
     }
+    /**
+     * Shutdown task
+     */
+    public void onShutdown(){
+        logd("Shutting down");
+        this.guiHolders.values().forEach(GUIInstance::destroy);;
+    }
     Plugin getPlugin(){
         return plugin;
     }
     // TODO: Remove
     public final void logd(String msg){
-        if(debug)
+        if(GUILib.DEBUG)
             GUILib.LOGGER.info("DBG(" + this.plugin.getName() + "): " + msg);
     }
 

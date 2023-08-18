@@ -57,6 +57,9 @@ public class Pattern {
         GUILib.LOGGER.info("slotSize: " + slotSize + ", size: " + size);
         return new Pattern(out, size);
     }
+    public static Pattern fromString(char separator, String pattern){
+        return fromStringArray(pattern.split(String.valueOf(separator)));
+    }
 
 
 }

@@ -8,7 +8,7 @@ import ru.whbex.guilib.gui.GUI;
 import ru.whbex.guilib.gui.GUIManager;
 import ru.whbex.guilib.gui.icon.IconProvider;
 import ru.whbex.guilib.gui.icon.StaticIconProvider;
-import ru.whbex.guilib.util.misc.ListGUI;
+import ru.whbex.guilib.util.misc.list.ListGUI;
 import ru.whbex.guilib.util.pager.PagerException;
 
 import java.util.ArrayList;

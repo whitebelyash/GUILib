@@ -22,6 +22,9 @@ public class GUIInstance {
     private final GUIManager guiManager;
     private final Map<Integer, Button> buttons = new HashMap<>();
     private final List<Integer> throttleList = new ArrayList<>();
+
+    // ListGUI page
+    private int page;
     private final InventoryView view;
     private final Inventory inv;
     private final List<BukkitTask> tasks;
@@ -104,6 +107,8 @@ public class GUIInstance {
      */
     public void updateButton(int pos, GUIContext ctx) throws IllegalArgumentException {
         Button button = getButton(pos);
+        if(button == null)
+            return;
         Supplier<ItemStack> is = () -> button.getIconProvider().getIcon(ctx);
         if(button.async()){
             inv.setItem(pos, button.getPlaceholder().getIcon(ctx));
@@ -126,11 +131,13 @@ public class GUIInstance {
     }
 
     /**
-     * Update all buttons in GUI
+     * Update all buttons in GUI. Skips modified buttons in GUIInstance
      */
     public void updateAll(){
         GUIContext ctx = new GUIContext(guiManager, gui, this, 0, null, player, GUIContext.ContextType.OPEN);
         gui.getButtons().forEach((pos, button) -> {
+            if(button == null)
+                return;
             if (button.getIconProvider().requireContext()) {
                 ctx.setSlot(pos);
                 this.updateButton(pos, ctx);
@@ -202,6 +209,14 @@ public class GUIInstance {
         throttleList.clear();
         updateAll();
     }
+    // Button throttle
+    // TODO: Support click types
+
+    /**
+     * Adds throttle for specified position.
+     * @param pos position
+     * @param time time (in seconds)
+     */
 
     public void addThrottle(int pos, long time){
         if(throttleList.contains(pos))
@@ -209,12 +224,40 @@ public class GUIInstance {
         throttleList.add(pos);
         BukkitTask t = Bukkit.getScheduler().runTaskLater(guiManager.getPlugin(), () -> throttleList.remove(pos), ExtraUtils.asTicks(time));
     }
+
+    /**
+     * Checks if specified position is throttled
+     * @param pos position
+     * @return is position throttled
+     */
     public boolean isThrottled(int pos){
         return throttleList.contains(pos);
     }
+
+    /**
+     * Removes throttle at specified position
+     * @param pos position
+     */
     public void removeThrottle(int pos){
         if(throttleList.contains(pos))
             throttleList.remove(pos);
+    }
+
+    /**
+     * A workaround for ListGUI. Sets current page
+     * TODO: better way to store ListGUI page
+     * @param p page
+     */
+    public void setPage(int p){
+        this.page = p;
+    }
+
+    /**
+     * Gets current page. For additional info see docs of setPage()
+     * @return page
+     */
+    public int getPage(){
+        return page;
     }
 
 
