@@ -26,6 +26,8 @@ public class ItemUtils {
                                        Material material,
                                        @Nullable Set<ItemFlag> hideFlags
                                        ){
+        if(count < 1)
+            throw new IllegalArgumentException("Invalid item amount! (" + count + ')');
         ItemStack is = new ItemStack(material);
         if(enchantments != null){
             for(Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()){
