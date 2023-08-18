@@ -54,7 +54,6 @@ public class Pattern {
         }
         int slotSize = ExtraUtils.stringLengthArray(structure);
         int size = slotSize % 9 == 0 ? slotSize / 9 : (slotSize / 9) + 1;
-        GUILib.LOGGER.info("slotSize: " + slotSize + ", size: " + size);
         return new Pattern(out, size);
     }
     public static Pattern fromString(char separator, String pattern){
