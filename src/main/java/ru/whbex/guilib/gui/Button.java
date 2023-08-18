@@ -8,6 +8,7 @@ import ru.whbex.guilib.gui.click.ClickSound;
 import ru.whbex.guilib.gui.icon.IconProvider;
 import ru.whbex.guilib.util.ExtraUtils;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,7 +20,7 @@ public class Button {
     private IconProvider icon;
     private IconProvider placeholder;
     private long throttle = ExtraUtils.asTicks(3);
-    private final Map<ClickType, ClickHandler> clickHandlers = new HashMap<>();
+    private final Map<ClickType, ClickHandler> clickHandlers = new EnumMap<>(ClickType.class);
     private boolean async = false;
     private Button(IconProvider iconProvider){
         this.icon = iconProvider;
