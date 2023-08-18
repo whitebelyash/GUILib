@@ -14,17 +14,17 @@ import ru.whbex.guilib.gui.icon.IconProvider;
 import ru.whbex.guilib.gui.icon.StaticIconProvider;
 
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ItemUtils {
+    private static final Set<ItemFlag> flags;
     public static ItemStack createItem(String name,
                                        @Nullable List<String> lore,
                                        @Nullable Map<Enchantment, Integer> enchantments,
                                        int count,
                                        Material material,
-                                       boolean hideTags
+                                       @Nullable Set<ItemFlag> hideFlags
                                        ){
         ItemStack is = new ItemStack(material);
         if(enchantments != null){
@@ -39,11 +39,22 @@ public class ItemUtils {
             return is;
         }
         im.setDisplayName(ExtraUtils.color(name));
-        if(hideTags)
-            im.addItemFlags(ItemFlag.values());
+        if(hideFlags != null)
+            hideFlags.forEach(im::addItemFlags);
         if(lore != null) im.setLore(lore.stream().map(ExtraUtils::color).collect(Collectors.toList()));
         is.setItemMeta(im);
         return is;
+    }
+    public static ItemStack createItem(String name,
+                                       @Nullable List<String> lore,
+                                       @Nullable Map<Enchantment, Integer> enchantments,
+                                       int count,
+                                       Material material,
+                                       boolean hideTags
+    ){
+        return hideTags ?
+                createItem(name, lore, enchantments, count, material, flags) :
+                createItem(name, lore, enchantments, count, material, null);
     }
     public static ItemStack createItem(String name, Material material){
         return createItem(name, null, null, 1, material, true);
@@ -74,5 +85,8 @@ public class ItemUtils {
                         ctx.guiManager().close(player);
                     }))
                 .build();
+    }
+    static {
+        flags = EnumSet.allOf(ItemFlag.class);
     }
 }
