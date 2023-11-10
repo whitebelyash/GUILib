@@ -169,7 +169,7 @@ public class GUIManager {
         ctx.setClickType(clickType);
         ctx.setContextType(GUIContext.ContextType.CLICK);
         if(sharedHandlers.containsKey(pos)){
-            runClickTask(sharedHandlers.get(pos), player, ctx);
+            runClickTask(sharedHandlers.get(pos), clickType, player, ctx);
             return true;
         }
         if(gi.isThrottled(pos))
@@ -194,7 +194,7 @@ public class GUIManager {
         // Callback is null - do nothing
         if(handler.callback(clickType) == null)
             return true;
-        runClickTask(handler, player, ctx);
+        runClickTask(handler, clickType, player, ctx);
         logd("Throttle: " + handler.throttle());
         if(handler.throttle() > 0){
             gi.addThrottle(pos, handler.throttle());
@@ -205,12 +205,12 @@ public class GUIManager {
 
     // click task
     // TODO: rework async
-    private void runClickTask(ClickHandler handler, Player player, GUIContext ctx){
+    private void runClickTask(ClickHandler handler, ClickType type, Player player, GUIContext ctx){
         Runnable task = () -> {
             logd("Running async (other thread): " + !Bukkit.isPrimaryThread());
             logd("Running async (ClickHandler async): " + handler.async());
 
-            handler.callback().call(player, ctx);
+            handler.callback(type).call(player, ctx);
             boolean result = ctx.clickResult();
             logd("Click result: " + result);
             if(handler.sound() != null){
