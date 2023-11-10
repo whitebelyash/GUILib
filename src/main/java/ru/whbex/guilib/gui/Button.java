@@ -2,6 +2,7 @@ package ru.whbex.guilib.gui;
 
 import org.bukkit.Sound;
 import org.bukkit.event.inventory.ClickType;
+import ru.whbex.guilib.Constants;
 import ru.whbex.guilib.gui.click.ClickCallback;
 import ru.whbex.guilib.gui.click.ClickHandler;
 import ru.whbex.guilib.gui.click.ClickSound;
@@ -20,7 +21,7 @@ public class Button {
     private IconProvider icon;
     private IconProvider placeholder;
     private long throttle = ExtraUtils.asTicks(3);
-    private final Map<ClickType, ClickHandler> clickHandlers = new EnumMap<>(ClickType.class);
+    private ClickHandler handler;
     private boolean async = false;
     private Button(IconProvider iconProvider){
         this.icon = iconProvider;
@@ -40,11 +41,8 @@ public class Button {
         return placeholder;
     }
 
-    public ClickHandler getClickHandler(ClickType type) {
-        return clickHandlers.get(type);
-    }
-    public long getThrottle(){
-        return throttle;
+    public ClickHandler getClickHandler() {
+        return handler;
     }
 
 
@@ -58,26 +56,26 @@ public class Button {
         private final Button inst = Button.this;
 
         private Builder(){}
-        public Builder addClickHandler(ClickType type, ClickHandler handler){
-            inst.clickHandlers.put(type, handler);
+        public Builder addClickHandler(ClickHandler handler){
+            inst.handler = handler;
             return this;
         }
-        public Builder addClickHandler(ClickType type, ClickCallback callback, boolean async){
-            inst.clickHandlers.put(type, new ClickHandler(type, callback, null, async));
+        public Builder addClickHandler(ClickType type, ClickCallback callback, boolean async, int throttle){
+            inst.handler = new  ClickHandler(null, async, throttle).addCallback(type, callback);
             return this;
         }
         public Builder addClickHandler(ClickType type, ClickCallback callback){
-            return this.addClickHandler(type, callback, false);
+            return this.addClickHandler(type, callback, false, Constants.DEFAULT_CLICK_THROTTLE);
         }
         public Builder addClickHandler(ClickCallback callback){
-            return this.addClickHandler(ClickType.LEFT, callback, false);
+            return this.addClickHandler(ClickType.LEFT, callback, false, Constants.DEFAULT_CLICK_THROTTLE);
         }
         public Builder addSoundFail(ClickType type, Sound sound){
-            getClickHandler(type).sound().setFail(sound);
+            getClickHandler().sound().setFail(sound);
             return this;
         }
         public Builder addSoundSuccess(ClickType type, Sound sound){
-            getClickHandler(type).sound().setSuccess(sound);
+            getClickHandler().sound().setSuccess(sound);
             return this;
         }
         public Builder async(){
@@ -86,12 +84,6 @@ public class Button {
         }
         public Builder placeholder(IconProvider iconProvider){
             inst.placeholder = iconProvider;
-            return this;
-        }
-        public Builder throttle(long t){
-            if(t < 0)
-                throw new IllegalArgumentException("Throttle must be a positive number or 0");
-            inst.throttle = t;
             return this;
         }
         public Button build(){

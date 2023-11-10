@@ -185,18 +185,19 @@ public class GUIManager {
         }
         Button b = gi.getButton(pos);
 
-        ClickHandler handler  = b.getClickHandler(clickType);
-        if(handler == null){
+        ClickHandler handler  = b.getClickHandler();
+      /*  if(handler == null){
             logd("Handler not set! GUI: " + gui.getName() + ", pos: " + pos + ", type: " + clickType);
             return true;
         }
+       */
         // Callback is null - do nothing
-        if(handler.callback() == null)
+        if(handler.callback(clickType) == null)
             return true;
         runClickTask(handler, player, ctx);
-        logd("Throttle: " + b.getThrottle());
-        if(b.getThrottle() > 0){
-            gi.addThrottle(pos, b.getThrottle());
+        logd("Throttle: " + handler.throttle());
+        if(handler.throttle() > 0){
+            gi.addThrottle(pos, handler.throttle());
         }
         return true;
 
