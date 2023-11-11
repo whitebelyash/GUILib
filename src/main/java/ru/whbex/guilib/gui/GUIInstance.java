@@ -6,6 +6,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
+import ru.whbex.guilib.gui.misc.CrossGUIContext;
 import ru.whbex.guilib.util.ExtraUtils;
 
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class GUIInstance {
     private final Inventory inv;
     private final List<BukkitTask> tasks;
     private final GUIContext ctx;
+    private CrossGUIContext cgctx;
     private GUI gui;
     private final Player player;
 
@@ -242,22 +244,14 @@ public class GUIInstance {
         if(throttleList.contains(pos))
             throttleList.remove(pos);
     }
-
-    /**
-     * A workaround for ListGUI. Sets current page
-     * TODO: better way to store ListGUI page
-     * @param p page
-     */
-    public void setPage(int p){
-        this.page = p;
+    public CrossGUIContext getCrossContext(){
+        return cgctx;
     }
-
-    /**
-     * Gets current page. For additional info see docs of setPage()
-     * @return page
-     */
-    public int getPage(){
-        return page;
+    public void setCrossContext(CrossGUIContext cgctx){
+        this.cgctx = cgctx;
+    }
+    public boolean hasCrossContext(){
+        return cgctx != null;
     }
 
 
