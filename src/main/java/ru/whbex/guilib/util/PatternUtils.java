@@ -25,4 +25,11 @@ public class PatternUtils {
         }
         return output.toString();
     }
+    // TODO: rename
+    public static int positionConvert(int x, int y){
+        if(y == 0)
+            return x;
+        else
+            return 9 * y + x;
+    }
 }

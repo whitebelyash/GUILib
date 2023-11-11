@@ -169,7 +169,7 @@ public class GUIManager {
         ctx.setClickType(clickType);
         ctx.setContextType(GUIContext.ContextType.CLICK);
         if(sharedHandlers.containsKey(pos)){
-            runClickTask(sharedHandlers.get(pos), player, ctx);
+            runClickTask(sharedHandlers.get(pos), clickType, player, ctx);
             return true;
         }
         if(gi.isThrottled(pos))
@@ -185,18 +185,19 @@ public class GUIManager {
         }
         Button b = gi.getButton(pos);
 
-        ClickHandler handler  = b.getClickHandler(clickType);
-        if(handler == null){
+        ClickHandler handler  = b.getClickHandler();
+      /*  if(handler == null){
             logd("Handler not set! GUI: " + gui.getName() + ", pos: " + pos + ", type: " + clickType);
             return true;
         }
+       */
         // Callback is null - do nothing
-        if(handler.callback() == null)
+        if(handler.callback(clickType) == null)
             return true;
-        runClickTask(handler, player, ctx);
-        logd("Throttle: " + b.getThrottle());
-        if(b.getThrottle() > 0){
-            gi.addThrottle(pos, b.getThrottle());
+        runClickTask(handler, clickType, player, ctx);
+        logd("Throttle: " + handler.throttle());
+        if(handler.throttle() > 0){
+            gi.addThrottle(pos, handler.throttle());
         }
         return true;
 
@@ -204,12 +205,12 @@ public class GUIManager {
 
     // click task
     // TODO: rework async
-    private void runClickTask(ClickHandler handler, Player player, GUIContext ctx){
+    private void runClickTask(ClickHandler handler, ClickType type, Player player, GUIContext ctx){
         Runnable task = () -> {
             logd("Running async (other thread): " + !Bukkit.isPrimaryThread());
             logd("Running async (ClickHandler async): " + handler.async());
 
-            handler.callback().call(player, ctx);
+            handler.callback(type).call(player, ctx);
             boolean result = ctx.clickResult();
             logd("Click result: " + result);
             if(handler.sound() != null){

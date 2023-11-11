@@ -1,4 +1,6 @@
 package ru.whbex.guilib.gui;
+import ru.whbex.guilib.util.PatternUtils;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -99,6 +101,10 @@ public class GUI {
             if(pos < 0 || pos > size*9)
                 throw new IllegalArgumentException("Invalid position!");
             GUI.this.buttons.put(pos, b);
+            return this;
+        }
+        public Builder set(int x, int y, Button b) throws IllegalArgumentException {
+            this.set(PatternUtils.positionConvert(x,y), b);
             return this;
         }
 
