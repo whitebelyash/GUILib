@@ -13,6 +13,7 @@ import java.util.*;
 
 public class Pattern {
     public static final char EMPTY_CHAR = ' ';
+    public static final char LINE_SEPARATOR = '_';
     private final Map<Character, Set<Integer>> charMap;
     private final int size;
 
@@ -56,8 +57,8 @@ public class Pattern {
         int size = slotSize % 9 == 0 ? slotSize / 9 : (slotSize / 9) + 1;
         return new Pattern(out, size);
     }
-    public static Pattern fromString(char separator, String pattern){
-        return fromStringArray(pattern.split(String.valueOf(separator)));
+    public static Pattern fromString(String pattern){
+        return fromStringArray(pattern.split(String.valueOf(LINE_SEPARATOR)));
     }
 
 
