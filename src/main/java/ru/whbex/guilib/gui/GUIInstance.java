@@ -220,11 +220,13 @@ public class GUIInstance {
      * @param time time (in seconds)
      */
 
+    // TODO: fix
     public void addThrottle(int pos, long time){
-        if(throttleList.contains(pos))
+        /* if(throttleList.contains(pos))
             return;
         throttleList.add(pos);
         BukkitTask t = Bukkit.getScheduler().runTaskLater(guiManager.getPlugin(), () -> throttleList.remove(pos), ExtraUtils.asTicks(time));
+         */
     }
 
     /**
@@ -248,6 +250,7 @@ public class GUIInstance {
         return cgctx;
     }
     public void setCrossContext(CrossGUIContext cgctx){
+        guiManager.logd(String.format("Cross context set at \"%s\" as %s", gui.getName(), cgctx.getClass().getName()));
         this.cgctx = cgctx;
     }
     public boolean hasCrossContext(){
