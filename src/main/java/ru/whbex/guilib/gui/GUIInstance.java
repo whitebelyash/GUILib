@@ -191,7 +191,7 @@ public class GUIInstance {
     void cancelAllTasks(){
         tasks.forEach(BukkitTask::cancel);
     }
-    void destroy(){
+    public void destroy(){
         this.view.close();
         cancelAllTasks();
     }
