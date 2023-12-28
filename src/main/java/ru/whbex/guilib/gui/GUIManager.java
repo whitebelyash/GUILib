@@ -18,6 +18,7 @@ import ru.whbex.guilib.GUILib;
 import ru.whbex.guilib.gui.click.ClickCallback;
 import ru.whbex.guilib.gui.click.ClickHandler;
 import ru.whbex.guilib.gui.click.ClickSound;
+import ru.whbex.guilib.gui.misc.CrossGUIContext;
 import ru.whbex.guilib.util.ExtraUtils;
 
 import java.util.HashMap;
@@ -115,13 +116,15 @@ public class GUIManager {
      * @return GUI Instance
      */
 
-    public GUIInstance open(Player player, GUI gui) {
+    public GUIInstance open(Player player, GUI gui, boolean preserveCrossContext) {
         logd("Open GUI " + gui.getName() + " (p: " + player.getName() + ")");
         if (gui.getSize() < 1 || gui.getSize() > 6) {
             // Exception already thrown
+            // :skull:
             GUILib.LOGGER.warning("Invalid gui size " + gui.getSize());
             return null;
         }
+        CrossGUIContext cgctx = isHoldingGUI(player) ? getGUIInstance(player).getCrossContext() : null;
         // GUI Instance reuse
         boolean use_gi = GUILib.getInstance().config().REUSE_GI && isHoldingGUI(player) && getGUIInstance(player).getGui().getSize() == gui.getSize();
         GUIInstance gi = use_gi ?
@@ -130,14 +133,19 @@ public class GUIManager {
         if (use_gi) {
             logd("Reusing old GUIInstance");
             gi.reuse(gui);
-            return gi;
         }
+        else {
+            if(getGUIInstance(player) != null)
+                getGUIInstance(player).destroy();
+        }
+        if(preserveCrossContext)
+            gi.setCrossContext(cgctx);
         guiHolders.put(player, gi);
         return gi;
     }
 
     /**
-     * Close GUI. If player isn't holding GUI, do nothing
+     * Close GUI. If player isn't holding GUI, does nothing
      * @param player GUI Holder
      */
     public void close(Player player){

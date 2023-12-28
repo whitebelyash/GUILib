@@ -25,7 +25,7 @@ public final class GUILib extends JavaPlugin {
         instance = this;
         String startup = DEBUG ? "Startup (Debug enabled)" : "Startup!";
         getLogger().info(startup);
-        this.getConfig();
+        this.saveDefaultConfig();
         conf = new GLConfig(this.getConfig());
         this.getCommand("glreload").setExecutor(new GuiCommand());
 

@@ -69,7 +69,7 @@ public class ItemUtils {
                 .build();
         return Button.builder(barrier).build();
     }
-    public static Button commandDispatcher(IconProvider icon, boolean close, String... args){
+    public static Button commandDispatcher(IconProvider icon, final boolean close, String... args){
         if(args.length < 1)
             throw new IllegalArgumentException("Args not provided");
         String cmd = args[0];

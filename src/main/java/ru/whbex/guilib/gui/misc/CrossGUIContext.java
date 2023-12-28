@@ -2,6 +2,9 @@ package ru.whbex.guilib.gui.misc;
 
 
 import ru.whbex.guilib.gui.GUIInstance;
+
+import java.util.UUID;
+
 /**
     How to Use:
     1. Extend this class
@@ -13,8 +16,13 @@ import ru.whbex.guilib.gui.GUIInstance;
  */
 public abstract class CrossGUIContext {
     protected final GUIInstance guiInstance;
+    protected final UUID guiId;
     public CrossGUIContext(GUIInstance gi){
         this.guiInstance = gi;
+        this.guiId = gi.getId();
     }
 
+    public UUID getBoundId() {
+        return guiId;
+    }
 }

@@ -9,10 +9,7 @@ import org.bukkit.scheduler.BukkitTask;
 import ru.whbex.guilib.gui.misc.CrossGUIContext;
 import ru.whbex.guilib.util.ExtraUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
@@ -24,8 +21,6 @@ public class GUIInstance {
     private final Map<Integer, Button> buttons = new HashMap<>();
     private final List<Integer> throttleList = new ArrayList<>();
 
-    // ListGUI page
-    private int page;
     private final InventoryView view;
     private final Inventory inv;
     private final List<BukkitTask> tasks;
@@ -33,10 +28,11 @@ public class GUIInstance {
     private CrossGUIContext cgctx;
     private GUI gui;
     private final Player player;
+    private UUID guiId; // not final cos of gui instance reuse
 
     public GUIInstance(GUIManager guiManager, GUI gui, Player player) {
         this.guiManager = guiManager;
-
+        this.guiId = UUID.randomUUID();
         this.gui = gui;
         this.player = player;
         this.tasks = new ArrayList<>();
@@ -205,6 +201,7 @@ public class GUIInstance {
         }
         cancelAllTasks();
         this.gui = gui;
+        this.guiId = UUID.randomUUID();
         this.view.setTitle(gui.getName(ctx));
         this.inv.clear();
         buttons.clear();
@@ -247,16 +244,33 @@ public class GUIInstance {
             throttleList.remove(pos);
     }
     public CrossGUIContext getCrossContext(){
+        contextVerify();
         return cgctx;
     }
     public void setCrossContext(CrossGUIContext cgctx){
-        guiManager.logd(String.format("Cross context set at \"%s\" as %s", gui.getName(), cgctx.getClass().getName()));
+        guiManager.logd(String.format("Cross context set: %s", cgctx));
         this.cgctx = cgctx;
     }
     public boolean hasCrossContext(){
         return cgctx != null;
     }
-
+    public boolean isOriginalCrossContext(){
+        return hasCrossContext() && cgctx.getBoundId() != guiId;
+    }
+    // Dirty hack, experimenting
+    // TODO: remove !!!
+    private void contextVerify(){
+        if(hasCrossContext() && cgctx.getBoundId() != guiId){
+            // do nothing, everything is good
+        }
+        else {
+            // !!!!!!!!!!!!!!!!!!!!!1 warning !!!!!!!!!!!!!!!!!!11111111111111111
+            guiManager.logd("!!! CrossContext bound id changed !!!");
+        }
+    }
+    public UUID getId(){
+        return guiId;
+    }
 
 
 
