@@ -23,7 +23,6 @@ import java.util.Map;
 public class Button {
 
     private IconProvider icon;
-    private IconProvider placeholder;
     private long throttle = ExtraUtils.asTicks(3);
     private ClickHandler handler;
     private Button(IconProvider iconProvider){
@@ -37,12 +36,6 @@ public class Button {
 
     public IconProvider getIconProvider() {
         return icon;
-    }
-    public boolean hasPlaceholder(){
-        return placeholder != null;
-    }
-    public IconProvider getPlaceholder(){
-        return placeholder;
     }
 
     public ClickHandler getClickHandler() {
@@ -73,18 +66,6 @@ public class Button {
         }
         public Builder addClickHandler(ClickCallback callback){
             return this.addClickHandler(Constants.DEFAULT_CLICK_TYPE, callback, false, Constants.DEFAULT_CLICK_THROTTLE);
-        }
-        public Builder addSoundFail(ClickType type, Sound sound){
-            getClickHandler().sound().setFail(sound);
-            return this;
-        }
-        public Builder addSoundSuccess(ClickType type, Sound sound){
-            getClickHandler().sound().setSuccess(sound);
-            return this;
-        }
-        public Builder placeholder(IconProvider iconProvider){
-            inst.placeholder = iconProvider;
-            return this;
         }
         public Button build(){
             return inst;
