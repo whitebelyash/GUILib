@@ -2,7 +2,9 @@ package ru.whbex.guilib.util;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.plugin.Plugin;
+import ru.whbex.guilib.gui.GUIContext;
 
 public class ExtraUtils {
     public static final char DEFAULT_COLOR_CHAR = '&';
@@ -36,5 +38,11 @@ public class ExtraUtils {
             }
         }
         return ret;
+    }
+    public static GUIContext updateContext(GUIContext ctx, int pos, ClickType ctype, GUIContext.ContextType ctx_type){
+        ctx.setSlot(pos);
+        ctx.setClickType(ctype);
+        ctx.setContextType(ctx_type);
+        return ctx;
     }
 }

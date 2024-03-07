@@ -55,24 +55,14 @@ public class GUIContext {
     public ContextType type() {
         return ctxType;
     }
-    void setSlot(int s){
+    public void setSlot(int s){
         this.slot = s;
     }
-    void setContextType(ContextType ct){
+    public void setContextType(ContextType ct){
         this.ctxType = ct;
     }
-    void setClickType(ClickType ct){
+    public void setClickType(ClickType ct){
         this.clickType = ct;
-    }
-
-
-    // TODO: Better way to get async info
-    /**
-     * Is GUIContext running asynchronously
-     * @return boolean
-     */
-    public boolean async(){
-        return Bukkit.isPrimaryThread();
     }
     void reset(){
         slot = 0;

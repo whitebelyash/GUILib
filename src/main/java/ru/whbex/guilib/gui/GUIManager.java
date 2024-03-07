@@ -182,9 +182,7 @@ public class GUIManager {
         GUIInstance gi = getGUIInstance(player);
         GUI gui = gi.getGui();
         GUIContext ctx = gi.getContext();
-        ctx.setSlot(pos);
-        ctx.setClickType(clickType);
-        ctx.setContextType(GUIContext.ContextType.CLICK);
+        ExtraUtils.updateContext(ctx, pos, clickType, GUIContext.ContextType.CLICK);
         if(sharedHandlers.containsKey(pos)){
             runClickTask(sharedHandlers.get(pos), clickType, player, ctx);
             return true;
@@ -224,8 +222,8 @@ public class GUIManager {
     // TODO: rework async
     private void runClickTask(ClickHandler handler, ClickType type, Player player, GUIContext ctx){
         Runnable task = () -> {
-            logd("Running async (other thread): " + !Bukkit.isPrimaryThread());
-            logd("Running async (ClickHandler async): " + handler.async());
+           // logd("Running async (other thread): " + !Bukkit.isPrimaryThread());
+           // logd("Running async (ClickHandler async): " + handler.async());
 
             handler.callback(type).call(player, ctx);
             boolean result = ctx.clickResult();
@@ -267,6 +265,4 @@ public class GUIManager {
         if(GUILib.DEBUG)
             GUILib.LOGGER.info("DBG(" + this.plugin.getName() + "): " + msg);
     }
-
-
 }
