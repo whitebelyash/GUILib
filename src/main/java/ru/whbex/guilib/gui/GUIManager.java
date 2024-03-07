@@ -110,11 +110,20 @@ public class GUIManager {
     }
 
     /**
+     * Removes shared click handler if it exists, otherwise does nothing
+     * @param pos position
+     */
+    public void unbindClick(int pos){
+        this.sharedHandlers.remove(pos);
+    }
+
+    /**
      * Open GUI for player
      * @param player GUI Holder
      * @param gui GUI
      * @return GUI Instance
      */
+
 
     public GUIInstance open(Player player, GUI gui, boolean preserveCrossContext) {
         logd("Open GUI " + gui.getName() + " (p: " + player.getName() + ")");
