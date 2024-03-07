@@ -260,7 +260,7 @@ public class GUIInstance {
     // Dirty hack, experimenting
     // TODO: remove !!!
     private void contextVerify(){
-        if(hasCrossContext() && cgctx.getBoundId() != guiId){
+        if(hasCrossContext() && cgctx.getBoundId() == guiId){
             // do nothing, everything is good
         }
         else {
