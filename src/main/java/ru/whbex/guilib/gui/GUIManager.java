@@ -11,14 +11,11 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitTask;
 import ru.whbex.guilib.GUILib;
-import ru.whbex.guilib.gui.click.ClickCallback;
 import ru.whbex.guilib.gui.click.ClickHandler;
 import ru.whbex.guilib.gui.click.ClickSound;
-import ru.whbex.guilib.gui.misc.CrossGUIContext;
+import ru.whbex.guilib.gui.misc.CrossObject;
 import ru.whbex.guilib.util.ExtraUtils;
 
 import java.util.HashMap;
@@ -133,7 +130,7 @@ public class GUIManager {
             GUILib.LOGGER.warning("Invalid gui size " + gui.getSize());
             return null;
         }
-        CrossGUIContext cgctx = isHoldingGUI(player) ? getGUIInstance(player).getCrossContext() : null;
+        CrossObject cgctx = isHoldingGUI(player) ? getGUIInstance(player).getCrossObject() : null;
         // GUI Instance reuse
         boolean use_gi = GUILib.getInstance().config().REUSE_GI && isHoldingGUI(player) && getGUIInstance(player).getGui().getSize() == gui.getSize();
         GUIInstance gi = use_gi ?
@@ -148,7 +145,7 @@ public class GUIManager {
                 getGUIInstance(player).destroy();
         }
         if(preserveCrossContext)
-            gi.setCrossContext(cgctx);
+            gi.setCrossObject(cgctx);
         guiHolders.put(player, gi);
         return gi;
     }

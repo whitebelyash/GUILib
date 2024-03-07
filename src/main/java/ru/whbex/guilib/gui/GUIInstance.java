@@ -6,11 +6,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
-import ru.whbex.guilib.gui.misc.CrossGUIContext;
-import ru.whbex.guilib.util.ExtraUtils;
+import ru.whbex.guilib.gui.misc.CrossObject;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 /**
@@ -25,7 +23,7 @@ public class GUIInstance {
     private final Inventory inv;
     private final List<BukkitTask> tasks;
     private final GUIContext ctx;
-    private CrossGUIContext cgctx;
+    private CrossObject cgctx;
     private GUI gui;
     private final Player player;
     private UUID guiId; // not final cos of gui instance reuse
@@ -108,12 +106,14 @@ public class GUIInstance {
         if(button == null)
             return;
         Supplier<ItemStack> is = () -> button.getIconProvider().getIcon(ctx);
-        if(button.async()){
+        /* if(button.async()){
             inv.setItem(pos, button.getPlaceholder().getIcon(ctx));
             Bukkit.getScheduler().runTaskAsynchronously(guiManager.getPlugin(), () -> {
                 this.setIcon(is.get(), pos);
             });
-        } else inv.setItem(pos, is.get());
+        } else
+            */
+        inv.setItem(pos, is.get());
     }
 
     /**
@@ -243,24 +243,24 @@ public class GUIInstance {
         if(throttleList.contains(pos))
             throttleList.remove(pos);
     }
-    public CrossGUIContext getCrossContext(){
+    public CrossObject getCrossObject(){
         contextVerify();
         return cgctx;
     }
-    public void setCrossContext(CrossGUIContext cgctx){
+    public void setCrossObject(CrossObject cgctx){
         guiManager.logd(String.format("Cross context set: %s", cgctx));
         this.cgctx = cgctx;
     }
-    public boolean hasCrossContext(){
+    public boolean hasCrossObject(){
         return cgctx != null;
     }
-    public boolean isOriginalCrossContext(){
-        return hasCrossContext() && cgctx.getBoundId() != guiId;
+    public boolean isOriginalCrossObject(){
+        return hasCrossObject() && cgctx.getBoundId() != guiId;
     }
-    // Dirty hack, experimenting
+    // experimenting
     // TODO: remove !!!
     private void contextVerify(){
-        if(hasCrossContext() && cgctx.getBoundId() == guiId){
+        if(hasCrossObject() && cgctx.getBoundId() == guiId){
             // do nothing, everything is good
         }
         else {
