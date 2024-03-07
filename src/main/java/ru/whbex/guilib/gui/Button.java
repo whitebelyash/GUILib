@@ -72,7 +72,7 @@ public class Button {
             return this.addClickHandler(type, callback, false, Constants.DEFAULT_CLICK_THROTTLE);
         }
         public Builder addClickHandler(ClickCallback callback){
-            return this.addClickHandler(ClickType.LEFT, callback, false, Constants.DEFAULT_CLICK_THROTTLE);
+            return this.addClickHandler(Constants.DEFAULT_CLICK_TYPE, callback, false, Constants.DEFAULT_CLICK_THROTTLE);
         }
         public Builder addSoundFail(ClickType type, Sound sound){
             getClickHandler().sound().setFail(sound);
