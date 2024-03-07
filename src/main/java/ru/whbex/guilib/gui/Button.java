@@ -26,7 +26,6 @@ public class Button {
     private IconProvider placeholder;
     private long throttle = ExtraUtils.asTicks(3);
     private ClickHandler handler;
-    private boolean async = false;
     private Button(IconProvider iconProvider){
         this.icon = iconProvider;
     }
@@ -38,9 +37,6 @@ public class Button {
 
     public IconProvider getIconProvider() {
         return icon;
-    }
-    public boolean async(){
-        return async;
     }
     public boolean hasPlaceholder(){
         return placeholder != null;
@@ -84,10 +80,6 @@ public class Button {
         }
         public Builder addSoundSuccess(ClickType type, Sound sound){
             getClickHandler().sound().setSuccess(sound);
-            return this;
-        }
-        public Builder async(){
-            inst.async = !inst.async;
             return this;
         }
         public Builder placeholder(IconProvider iconProvider){
