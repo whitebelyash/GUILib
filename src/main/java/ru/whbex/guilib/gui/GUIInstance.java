@@ -19,31 +19,74 @@ public class GUIInstance {
     private final Map<Integer, Button> buttons = new HashMap<>();
     private final List<Integer> throttleList = new ArrayList<>();
 
-    private final InventoryView view;
-    private final Inventory inv;
+    private InventoryView view;
+    private Inventory inv;
     private final List<BukkitTask> tasks;
     private final GUIContext ctx;
     private CrossObject cgctx;
     private GUI gui;
-    private final Player player;
+    private final UUID uuid;
     private UUID guiId; // not final cos of gui instance reuse
 
-    public GUIInstance(GUIManager guiManager, GUI gui, Player player) {
+    /**
+     * GUIInstance constructor.
+     * @param guiManager GUIManager instance
+     * @param gui GUI
+     * @param uuid Player UUID. Can be offline, just don't call open() then
+     */
+
+    public GUIInstance(GUIManager guiManager, GUI gui, UUID uuid) {
         this.guiManager = guiManager;
         this.guiId = UUID.randomUUID();
         this.gui = gui;
-        this.player = player;
+        this.uuid = uuid;
         this.tasks = new ArrayList<>();
         this.ctx = new GUIContext(guiManager, gui, this, 0, null, player, GUIContext.ContextType.OPEN);
+        guiManager.logd("Created GUIInstance "  + uuid);
+    }
+
+    //
+    // === GUIInstance control
+    //
+
+    // Now we can have GUIInstance bound to offline player
+    // but open() will throw NPE if player isn't online
+    void open(){
+        Player player;
+        if((player = Bukkit.getPlayer(uuid)) == null)
+            throw new NullPointerException("Player " + uuid + " is null!");
         this.inv = Bukkit.createInventory(player, gui.getInvSize(), gui.getName(ctx));
         this.view = player.openInventory(this.inv);
         this.updateAll();
     }
 
+    public void destroy(){
+        this.view.close();
+        cancelAllTasks();
+    }
+
+    void reuse(GUI gui) throws IllegalArgumentException {
+        if(this.gui.getInvSize() != gui.getInvSize()){
+            throw new IllegalArgumentException("Cannot reuse GUIInstance: size is different");
+        }
+        cancelAllTasks();
+        this.gui = gui;
+        this.guiId = UUID.randomUUID();
+        this.view.setTitle(gui.getName(ctx)); // not supported on bugrock with geyser
+        this.inv.clear();
+        buttons.clear();
+        throttleList.clear();
+    }
+
+    //
+    // ===  Common Getters ===
+    //
+
     public GUI getGui() {
         return gui;
     }
 
+    // TODO: make private/default
     public InventoryView getView() {
         return view;
     }
@@ -52,23 +95,62 @@ public class GUIInstance {
         return inv;
     }
 
+
+    GUIContext getContext(){
+        return ctx;
+    }
+
+
+    /**
+     * Get GUIInstance ID
+     * @return id
+     */
+    public UUID getId(){
+        return guiId;
+    }
+
+    /**
+     * Get GUIInstance holder UUID
+     * @return holder's UUID
+     */
+
+    public UUID getHolder(){
+        return this.uuid;
+    }
+    /*
     void setGUI(GUI gui) {
         this.gui = gui;
     }
 
+     */
+
+    //
+    // === Button management ===
+    //
+
     /**
-     * Set button at specified position
+     * Get button at specified position. Returns Button from GUI, if it isn't changed, otherwise - from GUIInstance
+     * @param pos Button position
+     * @return Button
+     * @throws IllegalArgumentException if position is invalid
+     */
+    public Button getButton(int pos) throws IllegalArgumentException {
+        if(gui.getInvSize() < pos)
+            throw new IllegalArgumentException("Invalid position!");
+        return buttons.get(pos) == null ? gui.getButton(pos) : buttons.get(pos);
+    }
+
+    /**
+     * Set button at specified position. Doesn't change icon in inventory, call updateButton() afterward
      * @param pos Button position
      * @param button Button to set
      * @param ctx GUI Context
      * @throws IllegalArgumentException if position is invalid
      */
-
     public void setButton(int pos, Button button, GUIContext ctx){
         if(pos > gui.getInvSize())
             throw new IllegalArgumentException("Invalid position!");
         buttons.put(pos, button);
-        updateButton(pos, ctx);
     }
 
     /**
@@ -117,25 +199,15 @@ public class GUIInstance {
     }
 
     /**
-     * Get button at specified position. Returns Button from GUI, if it isn't changed, otherwise - from GUIInstance
-     * @param pos Button position
-     * @return Button
-     * @throws IllegalArgumentException if position is invalid
-     */
-    public Button getButton(int pos) throws IllegalArgumentException {
-        if(gui.getInvSize() < pos)
-            throw new IllegalArgumentException("Invalid position!");
-        return buttons.get(pos) == null ? gui.getButton(pos) : buttons.get(pos);
-    }
-
-    /**
-     * Update all buttons in GUI. Skips modified buttons in GUIInstance
+     * Update all buttons in GUI.
      */
     public void updateAll(){
         GUIContext ctx = new GUIContext(guiManager, gui, this, 0, null, player, GUIContext.ContextType.OPEN);
         gui.getButtons().forEach((pos, button) -> {
             if(button == null)
                 return;
+            if(buttons.containsKey(pos))
+                button = buttons.get(pos);
             if (button.getIconProvider().requireContext()) {
                 ctx.setSlot(pos);
                 this.updateButton(pos, ctx);
@@ -145,38 +217,15 @@ public class GUIInstance {
         });
     }
 
-    /**
-     * Replace button later at specified position
-     * @param button Replacement button
-     * @param pos Button position
-     * @param time Replace delay
-     * @param ctx GUI Context
-     */
-    public void replaceLater(Button button, int pos, long time, GUIContext ctx){
-        BukkitTask t = Bukkit.getScheduler().runTaskLater(guiManager.getPlugin(),
-                () -> {
-                    if(!guiManager.isHoldingSameGUI(player, this))
-                        return;
-                    this.setButton(pos, button, ctx);
-                }, time);
-        addTask(t);
-    }
 
-    /**
-     * Temporarily replace button at specified position
-     * @param button Temporary button
-     * @param pos Position
-     * @param time How long it will be on screen in ticks
-     * @param ctx GUI Context
-     */
-    public void replaceTemp(Button button, int pos, long time, GUIContext ctx){
-        Button old = getButton(pos);
-        this.setButton(pos, button, ctx);
-        replaceLater(old, pos, time, ctx);
-    }
-    void setIcon(ItemStack item, int pos){
-        inv.setItem(pos, item);
-    }
+
+
+
+    //
+    // === Task Management ===
+    //
+
+    // TODO: Make public and add docs
     void addTask(BukkitTask task){
         this.tasks.add(task);
     }
@@ -187,27 +236,16 @@ public class GUIInstance {
     void cancelAllTasks(){
         tasks.forEach(BukkitTask::cancel);
     }
-    public void destroy(){
-        this.view.close();
-        cancelAllTasks();
-    }
 
-    GUIContext getContext(){
-        return ctx;
-    }
-    void reuse(GUI gui) throws IllegalArgumentException {
-        if(this.gui.getInvSize() != gui.getInvSize()){
-            throw new IllegalArgumentException("Cannot reuse GUIInstance: size is different");
-        }
-        cancelAllTasks();
-        this.gui = gui;
-        this.guiId = UUID.randomUUID();
-        this.view.setTitle(gui.getName(ctx));
-        this.inv.clear();
-        buttons.clear();
-        throttleList.clear();
-        updateAll();
-    }
+
+
+
+
+    //
+    // === GUI Cooldown Management ===
+    //
+
+
     // Button throttle
     // TODO: Support click types
 
@@ -243,6 +281,45 @@ public class GUIInstance {
         if(throttleList.contains(pos))
             throttleList.remove(pos);
     }
+
+    //
+    // === Utilities ===
+    //
+
+    /**
+     * Replace button later at specified position
+     * @param button Replacement button
+     * @param pos Button position
+     * @param time Replace delay
+     * @param ctx GUI Context
+     */
+    public void replaceLater(Button button, int pos, long time, GUIContext ctx){
+        BukkitTask t = Bukkit.getScheduler().runTaskLater(guiManager.getPlugin(),
+                () -> {
+                    if(!guiManager.isHoldingSameGUI(player, this))
+                        return;
+                    this.setButton(pos, button, ctx);
+                }, time);
+        addTask(t);
+    }
+
+    /**
+     * Temporarily replace button at specified position
+     * @param button Temporary button
+     * @param pos Position
+     * @param time How long it will be on screen in ticks
+     * @param ctx GUI Context
+     */
+    public void replaceTemp(Button button, int pos, long time, GUIContext ctx){
+        Button old = getButton(pos);
+        this.setButton(pos, button, ctx);
+        replaceLater(old, pos, time, ctx);
+    }
+
+    //
+    // === GUIMeta Management ===
+    //
+
     public CrossObject getCrossObject(){
         contextVerify();
         return cgctx;
@@ -268,9 +345,7 @@ public class GUIInstance {
             guiManager.logd("!!! CrossContext bound id changed !!!");
         }
     }
-    public UUID getId(){
-        return guiId;
-    }
+
 
 
 
