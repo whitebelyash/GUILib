@@ -1,0 +1,10 @@
+name: GUILib
+version: '${project.version}'
+main: ru.whbex.guilib.GUILib
+api-version: 1.19
+description: Inventory GUIs Library (Examples)
+commands:
+  glreload:
+    permission: guilib.reload
+    permission-message: "You don't have permission to execute this command!"
+    description: Reloads GUILib config

@@ -10,10 +10,10 @@ Still work-in-progress.
 2. Add as dependency
 ```xml
     <dependency>
-        <groupId>ru.whbex</groupId>
-        <artifactId>GUILib</artifactId>
-        <version>enter-guilib-version-here</version>
-        <scope>provided</scope>
+        <groupId>ru.whbex.lib</groupId>
+        <artifactId>gui</artifactId>
+        <version>0.3-SNAPSHOT</version>
+        <scope>compile</scope>
     </dependency>
 ```
 
@@ -55,5 +55,5 @@ public class GUIExample {
     }
 }
 ```
-[More...](src/main/java/ru/whbex/guilib/examples)
+[More...](GUILib-Examples/src/main/java/ru/whbex/develop/guilib/examples)
 
