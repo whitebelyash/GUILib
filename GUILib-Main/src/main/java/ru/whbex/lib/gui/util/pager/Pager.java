@@ -22,15 +22,13 @@ public class Pager<T> {
             throw new IllegalArgumentException("Invalid page number");
         if(page > getPagesAmount())
             page = 1; // or there's a better way to handle this?
-        List<T> ret = new ArrayList<>();
-        for(int pointer = 0; pointer < pageSize; pointer++){
-            int step = (page-1)*pageSize;
-            int pos = pointer+step;
-            if(pos >= size)
-                break;
-            ret.add(list.get(pos));
-        }
-        return ret;
+        int startIndex = (page-1)*pageSize;
+        int endIndex = startIndex + pageSize;
+        if(startIndex > list.size() || endIndex > list.size())
+            throw new IllegalStateException(String.format("Start/End index exceeds list size!" +
+                                                            " (size: %d, startIndex: %d, endIndex: %d",
+                                                            list.size(), startIndex, endIndex));
+        return list.subList(startIndex, endIndex);
     }
     public int getPageCount() {
         return list.size() % pageSize == 0 ? list.size() / pageSize : list.size() / pageSize + 1;
