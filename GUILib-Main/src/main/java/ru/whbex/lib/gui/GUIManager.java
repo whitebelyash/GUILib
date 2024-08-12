@@ -142,19 +142,20 @@ public class GUIManager {
      * Open GUI for player
      * @param player GUI Holder
      * @param gui GUI
-     * @return GUI Instance
+     * @return GUI Instance. Can return null if GUI size is invalid (shouldn't ever be a thing)
      */
 
 
-    public GUIInstance open(Player player, GUI gui, boolean preserveCrossContext) {
-        logd("Open GUI " + gui.getName() + " (p: " + player.getName() + ")");
+    public GUIInstance open(Player player, GUI gui, boolean preserveMeta) {
+        logd("Requested GUI open for " + player.getName());
         if (gui.getSize() < 1 || gui.getSize() > 6) {
             // Inaccessible.
             // :skull:
-            log(Level.WARNING, "Got invalid GUI");
+            log(Level.WARNING, "Got invalid GUI. Something is going really wrong, contact the developer");
             return null;
         }
        // CrossObject cgctx = isHoldingGUI(player) ? getGUIInstance(player).getCrossObject() : null;
+        GUIMeta oldMeta = isHoldingGUI(player) ? getGUIInstance(player).getMeta() : null;
         // GUI Instance reuse
         boolean use_gi = reuseGI && isHoldingGUI(player) && getGUIInstance(player).getGui().getSize() == gui.getSize();
         GUIInstance gi = use_gi ?
@@ -162,13 +163,17 @@ public class GUIManager {
                 new GUIInstance(this, gui, player.getUniqueId());
         if (use_gi) {
             logd("Reusing old GUIInstance");
-            gi.reuse(gui);
+            gi.reuse(gui, !preserveMeta);
         }
         else {
+            // Check if player already holds GUI
             if(getGUIInstance(player) != null)
                 getGUIInstance(player).destroy();
         }
-        if(preserveCrossContext)
+        if(preserveMeta)
+            gi.setMeta(oldMeta);
+
+
          //   gi.setCrossObject(cgctx);
         guiHolders.put(player, gi);
         return gi;
@@ -180,7 +185,7 @@ public class GUIManager {
      */
     public void close(Player player){
         if(isHoldingGUI(player) && player.getOpenInventory() == getGUIInstance(player).getView()){
-            logd("Closing GUI for " + player.getName());
+            logd("Requested GUI close for " + player.getName());
             getGUIInstance(player).destroy();
             guiHolders.remove(player);
         }

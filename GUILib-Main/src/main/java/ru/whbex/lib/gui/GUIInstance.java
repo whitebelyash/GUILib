@@ -11,6 +11,8 @@ import ru.whbex.lib.gui.misc.CrossObject;
 import java.util.*;
 import java.util.function.Supplier;
 
+// TODO: Do a cleanup/refactoring here
+
 /**
  * GUI Instance. Represents currently opened gui
  */
@@ -24,6 +26,7 @@ public class GUIInstance {
     private final List<BukkitTask> tasks;
     private final GUIContext ctx;
   //  private CrossObject cgctx;
+    private GUIMeta meta;
     private GUI gui;
     private final UUID uuid;
     private UUID guiId; // not final cos of gui instance reuse
@@ -69,7 +72,7 @@ public class GUIInstance {
         cancelAllTasks();
     }
 
-    void reuse(GUI gui) throws IllegalArgumentException {
+    void reuse(GUI gui, boolean clearMeta) throws IllegalArgumentException {
         if(this.gui.getInvSize() != gui.getInvSize()){
             throw new IllegalArgumentException("Cannot reuse GUIInstance: size is different");
         }
@@ -78,6 +81,8 @@ public class GUIInstance {
         this.guiId = UUID.randomUUID();
         this.view.setTitle(gui.getName(ctx)); // not supported on bugrock with geyser
         this.inv.clear();
+        if(clearMeta)
+            meta.wipe();
         buttons.clear();
         throttleList.clear();
     }
@@ -120,6 +125,15 @@ public class GUIInstance {
 
     public UUID getHolder(){
         return this.uuid;
+    }
+
+    public GUIMeta getMeta(){
+        if(meta == null)
+            meta = new GUIMeta();
+        return meta;
+    }
+    void setMeta(GUIMeta meta){
+        this.meta = meta;
     }
     /*
     void setGUI(GUI gui) {

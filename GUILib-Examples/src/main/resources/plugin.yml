@@ -1,6 +1,6 @@
 name: GUILib
 version: '${project.version}'
-main: ru.whbex.guilib.GUILib
+main: ru.whbex.develop.guilib.GUILib
 api-version: 1.19
 description: Inventory GUIs Library (Examples)
 commands:
