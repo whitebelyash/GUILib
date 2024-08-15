@@ -15,6 +15,14 @@ import java.util.*;
 public class StaticIconProvider implements IconProvider {
 
     private StaticIconProvider(){}
+    public StaticIconProvider(String name, List<String> lore, int amount,  Material mat, boolean ench, boolean hideTag){
+        if(amount < 1 || amount > 64)
+            amount = 1;
+        if(lore == null)
+            lore = Collections.emptyList();
+        Map<Enchantment, Integer> e = ench ? Collections.singletonMap(Enchantment.MENDING, 1) : null;
+        this.item = ItemUtils.createItem(name, lore, e, amount, mat, hideTag);
+    }
     private ItemStack item;
 
 
@@ -36,7 +44,7 @@ public class StaticIconProvider implements IconProvider {
     }
 
     public class Builder {
-        private String name = "Default icon name";
+        private String name = null;
         private int count = 1;
         private List<String> lore = new ArrayList<>();
         private Material material = Material.STONE;
