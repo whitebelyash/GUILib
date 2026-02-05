@@ -1,9 +1,6 @@
 package ru.whbex.lib.gui.util;
 
-import ru.whbex.lib.gui.Button;
 import ru.whbex.lib.gui.Pattern;
-
-import java.util.Map;
 
 public class PatternUtils {
     public static String[] validatePattern(String[] pattern){

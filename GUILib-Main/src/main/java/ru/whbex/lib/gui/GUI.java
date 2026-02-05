@@ -2,10 +2,8 @@ package ru.whbex.lib.gui;
 import ru.whbex.lib.gui.util.PatternUtils;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * GUI Container. Contains buttons and their positions

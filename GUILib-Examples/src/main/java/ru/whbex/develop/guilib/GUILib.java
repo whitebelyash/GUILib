@@ -28,7 +28,7 @@ public final class GUILib extends JavaPlugin {
         getLogger().info(startup);
         this.saveDefaultConfig();
         conf = new GLConfig(this.getConfig());
-        this.man = new GUIManager(this, true);
+        this.man = new GUIManager(this);
         this.man.setReuseGI(true);
         this.getCommand("glexample").setExecutor(new GuiCommand());
 

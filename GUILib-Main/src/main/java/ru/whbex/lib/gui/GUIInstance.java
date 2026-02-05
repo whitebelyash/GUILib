@@ -23,7 +23,6 @@ public class GUIInstance {
     private Inventory inv;
     private final List<BukkitTask> tasks;
     private final GUIContext ctx;
-  //  private CrossObject cgctx;
     private GUIMeta meta;
     private GUI gui;
     private final UUID uuid;
@@ -133,12 +132,6 @@ public class GUIInstance {
     void setMeta(GUIMeta meta){
         this.meta = meta;
     }
-    /*
-    void setGUI(GUI gui) {
-        this.gui = gui;
-    }
-
-     */
 
     //
     // === Button management ===
@@ -204,13 +197,6 @@ public class GUIInstance {
         if(button == null)
             return;
         Supplier<ItemStack> is = () -> button.getIconProvider().getIcon(ctx);
-        /* if(button.async()){
-            inv.setItem(pos, button.getPlaceholder().getIcon(ctx));
-            Bukkit.getScheduler().runTaskAsynchronously(guiManager.getPlugin(), () -> {
-                this.setIcon(is.get(), pos);
-            });
-        } else
-            */
         inv.setItem(pos, is.get());
     }
 
@@ -273,11 +259,7 @@ public class GUIInstance {
 
     // TODO: fix
     public void addThrottle(int pos, long time){
-        /* if(throttleList.contains(pos))
-            return;
-        throttleList.add(pos);
-        BukkitTask t = Bukkit.getScheduler().runTaskLater(guiManager.getPlugin(), () -> throttleList.remove(pos), ExtraUtils.asTicks(time));
-         */
+
     }
 
     /**
@@ -331,41 +313,4 @@ public class GUIInstance {
         this.setButton(pos, button, ctx);
         replaceLater(old, pos, time, ctx);
     }
-
-    //
-    // === GUIMeta Management ===
-    //
-
-    /*
-    public CrossObject getCrossObject(){
-        contextVerify();
-        return cgctx;
-    }
-    public void setCrossObject(CrossObject cgctx){
-        guiManager.logd(String.format("Cross context set: %s", cgctx));
-        this.cgctx = cgctx;
-    }
-    public boolean hasCrossObject(){
-        return cgctx != null;
-    }
-    public boolean isOriginalCrossObject(){
-        return hasCrossObject() && cgctx.getBoundId() != guiId;
-    }
-    // experimenting
-    // TODO: remove !!!
-    private void contextVerify(){
-        if(hasCrossObject() && cgctx.getBoundId() == guiId){
-            // do nothing, everything is good
-        }
-        else {
-            // !!!!!!!!!!!!!!!!!!!!!1 warning !!!!!!!!!!!!!!!!!!11111111111111111
-            guiManager.logd("!!! CrossContext bound id changed !!!");
-        }
-    }
-     */
-
-
-
-
-
 }

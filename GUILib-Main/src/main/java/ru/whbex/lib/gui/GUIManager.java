@@ -55,8 +55,7 @@ public class GUIManager {
     private final Logger logger;
     private final Map<Player, GUIInstance> guiHolders = new HashMap<>();
     private final Map<Integer, ClickHandler> sharedHandlers = new HashMap<>();
-    private final Map<Player, Button> throttled = new HashMap<>();
-    public GUIManager(Plugin plugin, boolean debug){
+    public GUIManager(Plugin plugin){
         this.plugin = plugin;
         this.logger = plugin.getLogger();
         Bukkit.getPluginManager().registerEvents(new GUIListener(), plugin);
@@ -153,7 +152,6 @@ public class GUIManager {
             log(Level.WARNING, "Got invalid GUI. Something is going really wrong, contact the developer");
             return null;
         }
-       // CrossObject cgctx = isHoldingGUI(player) ? getGUIInstance(player).getCrossObject() : null;
         GUIMeta oldMeta = isHoldingGUI(player) ? getGUIInstance(player).getMeta() : null;
         // GUI Instance reuse
         boolean use_gi = reuseGI && isHoldingGUI(player) && getGUIInstance(player).getGui().getSize() == gui.getSize();
@@ -166,14 +164,9 @@ public class GUIManager {
         }
         else {
             // Check if player already holds GUI
-            if(getGUIInstance(player) != null)
-                getGUIInstance(player).destroy();
+            if(getGUIInstance(player) != null) getGUIInstance(player).destroy();
         }
-        if(preserveMeta)
-            gi.setMeta(oldMeta);
-
-
-         //   gi.setCrossObject(cgctx);
+        if(preserveMeta) gi.setMeta(oldMeta);
         guiHolders.put(player, gi);
         gi.open();
         return gi;
@@ -235,7 +228,6 @@ public class GUIManager {
         if(handler.callback(clickType) == null)
             return true;
         runClickTask(handler, clickType, player, ctx);
-        logd("Throttle: " + handler.throttle());
         if(handler.throttle() > 0){
             gi.addThrottle(pos, handler.throttle());
         }
@@ -247,12 +239,7 @@ public class GUIManager {
     // TODO: rework async
     private void runClickTask(ClickHandler handler, ClickType type, Player player, GUIContext ctx){
         Runnable task = () -> {
-           // logd("Running async (other thread): " + !Bukkit.isPrimaryThread());
-           // logd("Running async (ClickHandler async): " + handler.async());
-
             handler.callback(type).call(player, ctx);
-            boolean result = ctx.clickResult();
-            logd("Click result: " + result);
             if(handler.sound() != null){
                 logd("Playing sound " + handler.sound().getSound());
                 ClickSound.playSound(player, handler.sound());
