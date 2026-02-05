@@ -1,17 +1,15 @@
 package ru.whbex.develop.guilib.examples;
 
 import org.bukkit.Material;
-import org.checkerframework.checker.units.qual.A;
 import ru.whbex.lib.gui.Button;
 import ru.whbex.lib.gui.GUI;
-import ru.whbex.lib.gui.icon.DynamicIconProvider;
-import ru.whbex.lib.gui.icon.IconProvider;
-import ru.whbex.lib.gui.icon.StaticIconProvider;
+import ru.whbex.lib.gui.icon.DynamicIcon;
+import ru.whbex.lib.gui.icon.Icon;
+import ru.whbex.lib.gui.icon.StaticIcon;
 import ru.whbex.lib.gui.util.ItemUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 
 /* GUI Meta test example */
@@ -19,7 +17,7 @@ import java.util.function.Consumer;
 /* GUI can also be created by extending base GUI class. Let's test that here */
 public class GUIMetaExample {
     private static final String META_OBJ = "metaTest";
-    private static final IconProvider a = new DynamicIconProvider(ctx -> {
+    private static final Icon a = new DynamicIcon(ctx -> {
         final boolean exist = ctx.guiInstance().getMeta().hasKey("metaexample");
         String name = exist ? "Meta exists!" : "Meta not found :(";
         List<String> lore = new ArrayList<>();
@@ -33,9 +31,9 @@ public class GUIMetaExample {
     });
 
     /* Icons */
-    private static final IconProvider metaWipe = new StaticIconProvider("Wipe meta objects", null, 1, Material.BARRIER, false, false);
-    private static final IconProvider next = new StaticIconProvider("next", null, 1, Material.PAPER, true, true);
-    private static final IconProvider prev = new StaticIconProvider("prev", null, 1, Material.PAPER, true, true);
+    private static final Icon metaWipe = new StaticIcon("Wipe meta objects", null, 1, Material.BARRIER, false, false);
+    private static final Icon next = new StaticIcon("next", null, 1, Material.PAPER, true, true);
+    private static final Icon prev = new StaticIcon("prev", null, 1, Material.PAPER, true, true);
 
     /* Buttons */
     private static final Button metaWipeButton = Button.builder(metaWipe)

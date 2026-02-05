@@ -8,7 +8,7 @@ import ru.whbex.lib.gui.util.ItemUtils;
 /**
  * Stub icon provider. Returns a hardcoded ItemStack
  */
-public class StubIconProvider implements IconProvider {
+public class StubIcon implements Icon {
     public static final ItemStack STUB = ItemUtils.createItem("", Material.GRAY_STAINED_GLASS_PANE);
 
     @Override

@@ -4,7 +4,7 @@ import org.bukkit.inventory.ItemStack;
 import ru.whbex.lib.gui.GUIContext;
 
 
-public interface IconProvider {
+public interface Icon {
     ItemStack getIcon(GUIContext ctx);
     boolean requireContext();
 

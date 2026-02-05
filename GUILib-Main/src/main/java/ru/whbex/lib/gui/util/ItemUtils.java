@@ -2,15 +2,13 @@ package ru.whbex.lib.gui.util;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import ru.whbex.lib.gui.Button;
-import ru.whbex.lib.gui.icon.IconProvider;
-import ru.whbex.lib.gui.icon.StaticIconProvider;
+import ru.whbex.lib.gui.icon.Icon;
+import ru.whbex.lib.gui.icon.StaticIcon;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -60,14 +58,14 @@ public class ItemUtils {
         return createItem(name, null, null, 1, material, true);
     }
     public static Button errBarrier(String msg, String... lore){
-        IconProvider barrier = StaticIconProvider.builder()
+        Icon barrier = StaticIcon.builder()
                 .material(Material.BARRIER)
                 .name("&c" + msg)
                 .lore(false, lore)
                 .build();
         return Button.builder(barrier).build();
     }
-    public static Button commandDispatcher(IconProvider icon, final boolean close, String... args){
+    public static Button commandDispatcher(Icon icon, final boolean close, String... args){
         if(args.length < 1)
             throw new IllegalArgumentException("Args not provided");
         String cmd = args[0];

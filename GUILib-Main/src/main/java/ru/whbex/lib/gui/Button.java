@@ -1,20 +1,13 @@
 package ru.whbex.lib.gui;
 
-import org.bukkit.Sound;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import ru.whbex.lib.gui.util.Constants;
 import ru.whbex.lib.gui.click.ClickCallback;
 import ru.whbex.lib.gui.click.ClickHandler;
-import ru.whbex.lib.gui.click.ClickSound;
-import ru.whbex.lib.gui.icon.DynamicIconProvider;
-import ru.whbex.lib.gui.icon.IconProvider;
-import ru.whbex.lib.gui.icon.StaticIconProvider;
+import ru.whbex.lib.gui.icon.DynamicIcon;
+import ru.whbex.lib.gui.icon.Icon;
 import ru.whbex.lib.gui.util.ExtraUtils;
-
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Button. Contains icon and ClickHandler
@@ -22,19 +15,19 @@ import java.util.Map;
 // TODO: Rework async !!! current system is fcking cringe lol
 public class Button {
 
-    private IconProvider icon;
+    private Icon icon;
     private long throttle = ExtraUtils.asTicks(3);
     private ClickHandler handler;
-    private Button(IconProvider iconProvider){
-        this.icon = iconProvider;
+    private Button(Icon icon){
+        this.icon = icon;
     }
 
     public static Button fromItem(ItemStack i, ClickHandler h){
-        return Button.builder(new DynamicIconProvider(ctx -> i)).addClickHandler(h).build();
+        return Button.builder(new DynamicIcon(ctx -> i)).addClickHandler(h).build();
     }
 
 
-    public IconProvider getIconProvider() {
+    public Icon getIconProvider() {
         return icon;
     }
 
@@ -46,8 +39,8 @@ public class Button {
     private Builder getBuilder(){
         return new Builder();
     }
-    public static Builder builder(IconProvider iconProvider){
-        return new Button(iconProvider).getBuilder();
+    public static Builder builder(Icon icon){
+        return new Button(icon).getBuilder();
     }
     public class Builder {
         private final Button inst = Button.this;

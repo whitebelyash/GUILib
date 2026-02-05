@@ -12,10 +12,10 @@ import java.util.*;
  * Static icon provider. Just returns a prebuilt ItemStack.
  * Has a builder for simplified item creation
  */
-public class StaticIconProvider implements IconProvider {
+public class StaticIcon implements Icon {
 
-    private StaticIconProvider(){}
-    public StaticIconProvider(String name, List<String> lore, int amount,  Material mat, boolean ench, boolean hideTag){
+    private StaticIcon(){}
+    public StaticIcon(String name, List<String> lore, int amount, Material mat, boolean ench, boolean hideTag){
         if(amount < 1 || amount > 64)
             amount = 1;
         if(lore == null)
@@ -30,7 +30,7 @@ public class StaticIconProvider implements IconProvider {
         return new Builder();
     }
     public static Builder builder(){
-        return new StaticIconProvider().getBuilder();
+        return new StaticIcon().getBuilder();
     }
 
     @Override
@@ -50,7 +50,7 @@ public class StaticIconProvider implements IconProvider {
         private Material material = Material.STONE;
         private boolean ench = false;
         private boolean hideTags = false;
-        private final StaticIconProvider inst = StaticIconProvider.this;
+        private final StaticIcon inst = StaticIcon.this;
         private Builder(){}
 
         public Builder name(String n){
@@ -93,7 +93,7 @@ public class StaticIconProvider implements IconProvider {
             ench = !ench;
             return this;
         }
-        public StaticIconProvider build(){
+        public StaticIcon build(){
             Map<Enchantment, Integer> ench = this.ench ? Collections.singletonMap(Enchantment.MENDING, 1) : null;
             inst.item = ItemUtils.createItem(name, lore, ench, count, material, hideTags);
             return inst;
