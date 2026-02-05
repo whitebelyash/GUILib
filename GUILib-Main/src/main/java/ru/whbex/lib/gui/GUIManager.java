@@ -15,7 +15,6 @@ import org.bukkit.plugin.Plugin;
 
 import ru.whbex.lib.gui.click.ClickHandler;
 import ru.whbex.lib.gui.click.ClickSound;
-import ru.whbex.lib.gui.misc.CrossObject;
 import ru.whbex.lib.gui.util.Constants;
 import ru.whbex.lib.gui.util.ExtraUtils;
 
