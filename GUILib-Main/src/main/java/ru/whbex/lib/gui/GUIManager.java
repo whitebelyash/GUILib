@@ -176,6 +176,7 @@ public class GUIManager {
 
          //   gi.setCrossObject(cgctx);
         guiHolders.put(player, gi);
+        gi.open();
         return gi;
     }
 
@@ -200,7 +201,7 @@ public class GUIManager {
      * @return Is click cancelled or not. If null - skip Event#setCancelled
      */
     // TODO: Rework click handle result
-
+    // TODO: also refactor this shit
     private Boolean handleClick(Player player, ClickType clickType, int pos, Inventory inv){
         if(!isHoldingGUI(player))
             return null;
@@ -227,11 +228,10 @@ public class GUIManager {
         Button b = gi.getButton(pos);
 
         ClickHandler handler  = b.getClickHandler();
-      /*  if(handler == null){
+        if(handler == null){
             logd("Handler not set! GUI: " + gui.getName() + ", pos: " + pos + ", type: " + clickType);
             return true;
         }
-       */
         // Callback is null - do nothing
         if(handler.callback(clickType) == null)
             return true;

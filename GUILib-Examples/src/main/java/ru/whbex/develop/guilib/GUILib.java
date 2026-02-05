@@ -17,6 +17,7 @@ public final class GUILib extends JavaPlugin {
     public static Logger LOGGER;
     private static GUILib instance;
     private final List<BukkitTask> tasks = new ArrayList<>();
+    private GUIManager man;
     private GLConfig conf;
 
     @Override
@@ -27,7 +28,9 @@ public final class GUILib extends JavaPlugin {
         getLogger().info(startup);
         this.saveDefaultConfig();
         conf = new GLConfig(this.getConfig());
-        this.getCommand("glreload").setExecutor(new GuiCommand());
+        this.man = new GUIManager(this, true);
+        this.man.setReuseGI(true);
+        this.getCommand("glexample").setExecutor(new GuiCommand());
 
     }
 
@@ -48,5 +51,8 @@ public final class GUILib extends JavaPlugin {
     }
     public GLConfig config(){
         return conf;
+    }
+    public GUIManager guiManager(){
+        return man;
     }
 }

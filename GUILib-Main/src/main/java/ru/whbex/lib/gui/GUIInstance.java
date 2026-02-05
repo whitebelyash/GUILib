@@ -6,8 +6,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
-import ru.whbex.lib.gui.misc.CrossObject;
-
 import java.util.*;
 import java.util.function.Supplier;
 

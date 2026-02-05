@@ -3,6 +3,7 @@ import ru.whbex.lib.gui.util.PatternUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -10,6 +11,7 @@ import java.util.function.Supplier;
  * GUI Container. Contains buttons and their positions
  */
 public class GUI {
+
     private static final int INV_LINE_SIZE = 9;
     private Function<GUIContext, String> name = ctx -> "Default GUI";
     private Map<Integer, Button> buttons = new HashMap<>();
@@ -17,6 +19,9 @@ public class GUI {
     // in columns
     private int size = 1;
     private GUI(){}
+    public GUI(Consumer<Builder> builder){
+        builder.accept(getBuilder());
+    }
 
     public String getName() {
         return name.apply(null);

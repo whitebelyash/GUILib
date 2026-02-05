@@ -39,7 +39,14 @@ public class GUIMeta {
         return hasKey(key) && clazz.isInstance(meta.get(key));
     }
 
-    public void wipe(){
+    /**
+     * Wipes GUIMeta
+     * @return true, if wipe success, false if map was already empty
+     */
+    public boolean wipe(){
+        if(meta.isEmpty())
+            return false;
         meta.clear();
+        return true;
     }
 }
