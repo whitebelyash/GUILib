@@ -254,8 +254,8 @@ public class GUIManager {
             boolean result = ctx.clickResult();
             logd("Click result: " + result);
             if(handler.sound() != null){
-                logd("Playing sound " + handler.sound().getSound(result));
-                ClickSound.playSound(player, handler.sound(), result);
+                logd("Playing sound " + handler.sound().getSound());
+                ClickSound.playSound(player, handler.sound());
             }
         };
         if(handler.async())

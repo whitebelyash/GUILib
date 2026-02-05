@@ -6,33 +6,28 @@ import org.bukkit.entity.Player;
 public class ClickSound {
     public static final float DEF_VOLUME = 1;
     public static final float DEF_PITCH= 1;
-    public static void playSound(Player player, ClickSound sound, boolean success){
-        player.playSound(player.getLocation(), sound.getSound(success), sound.getVolume(), sound.getPitch());
+    public static void playSound(Player player, ClickSound sound){
+        player.playSound(player.getLocation(), sound.getSound(), sound.getVolume(), sound.getPitch());
 
     }
-    private Sound soundSuccess;
-    private Sound soundFail;
+    private final Sound sound;
     private final float volume;
     private final float pitch;
 
-    public ClickSound(Sound sndSuccess, Sound sndFail, float volume, float pitch){
-        this.soundFail = sndFail;
-        this.soundSuccess = sndSuccess;
+    public ClickSound(Sound sound, float volume, float pitch){
+        this.sound = sound;
         this.volume = volume;
         this.pitch = pitch;
     }
-    public ClickSound(Sound sndSuccess, Sound sndFail){
-        this(sndSuccess, sndFail, DEF_VOLUME, DEF_PITCH);
-    }
     public ClickSound(Sound snd){
-        this(snd, snd, DEF_VOLUME, DEF_PITCH);
+        this(snd, DEF_VOLUME, DEF_PITCH);
     }
     public ClickSound(){
-        this(null, null);
+        this(null);
     }
 
-    public Sound getSound(boolean success){
-        return success ? soundSuccess : soundFail;
+    public Sound getSound(){
+        return sound;
     }
 
     public float getPitch() {
@@ -41,11 +36,5 @@ public class ClickSound {
 
     public float getVolume() {
         return volume;
-    }
-    public void setFail(Sound snd){
-        this.soundFail = snd;
-    }
-    public void setSuccess(Sound snd){
-        this.soundSuccess = snd;
     }
 }
